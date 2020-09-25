@@ -4,12 +4,11 @@
 
 APEXMOD is a QGIS-based graphical user interface that facilitates linking [APEX](https://epicapex.tamu.edu/apex//) and [MODFLOW](https://www.usgs.gov/mission-areas/water-resources/science/modflow-and-related-programs?qt-science_center_objects=0#qt-science_center_objects), running APEX-MODFLOW simulations, and viewing results.  
 
-This repository contains source codes and an executable for the new version of APEXMOD.
-All other materials: example dataset and tutorial document can be downloaded from the old version of APEXMOD repository.
+This repository contains source codes and an executable for the Alpha version of APEXMOD.
 - **[Installer](https://github.com/spark-brc/APEXMOD/releases/tag/1.0.a):** APEXMOD 1.0.a.exe
 - **[Inputs](https://drive.google.com/drive/folders/1FPpKub6IljjjncCjxZeV6LIsZ-HpYsJP?usp=sharing):** Animas Dataset.zip
 - **[Source Code](https://github.com/spark-brc/APEXMOD/tree/master/APEXMOD)**
-- **[Tutorial Document](https://github.com/spark-brc/qswatmod/blob/master/APEXMOD%20Tutorial.pdf)** will be provided soon!
+- **[Tutorial Document](https://github.com/spark-brc/qswatmod/blob/master/QSWATMOD%20Tutorial.pdf)** will be provided soon!
 
 -----
 # <img src="./imgs/icon2.png" style="float" width="80" align="center"> &nbsp; Installation
