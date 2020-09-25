@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="APEXMOD">
+    <file>pics/blm-logo.png</file>
+    <file>pics/am_icon.png</file>
+    <file>pics/flopylogo_sg.png</file>
+    <file>pics/modflow_obs.png</file>
+    <file>pics/USDAcolor.png</file>
+    <file>pics/TAMUAgriLifeResearchLogo.png</file>
+    <file>pics/help_pics/01_mf_option2.png</file>
+    <file>pics/help_pics/02_mf_option2.png</file>
+    <file>pics/help_pics/03_IdRiver01.png</file>
+  </qresource>
+</RCC>

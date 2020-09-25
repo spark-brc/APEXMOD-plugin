@@ -1,0 +1,53 @@
+@spark 
+
+
+1st Tab Main:
+    ✔ Change database DB_apexmf.db file @done(20-09-04 09:53)
+    ☐ Write the description of APEX-MODFLOW
+    ☐ Include a diagram
+    ✔ Include APEXMOD logo, texas A&M, and BLM logos @done(20-09-04 09:53)
+    ☐ Delet okay and cancel buttons
+
+2nd Tab Linking process:
+    ☐ Load model inputs
+    * MODFLOW folder should be separate
+        ☐ Change basefolder path
+        ☐ APEX model
+        ☐ SUB shapefile
+        ☐ River shapefile
+        ☐ MODFLOW
+    -define simulation period:
+        ☐ define simulation period using APEXCONT.DAT
+        ☐ 
+
+    Linking process:
+        ☐ calculate sub area
+        ☐ intersect sub by mf_grid
+        ☐ calculate overlap area
+
+
+
+3rd Tab Configuration settting:
+    ☐ Create "apexmf_link.txt' file
+    ☐ Delete CreateAPEX button
+
+4th Visualization:
+    ☐ Visualize RCH file (Daily, Monthly, Annual)
+        ☐ Create combox
+        ☐ 
+
+
+
+
+
+
+
+TODO:
+    ☐ Change layer name on canvas
+    ☐ Daily to monthly average
+    ☐ Convert gpkg to shp back
+        - more problems? 
+            - not copying gpkg
+            - not able to be deleted / overwritten
+    ☐ create "apexmf_link.txt' file
+
