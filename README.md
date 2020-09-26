@@ -6,7 +6,7 @@ APEXMOD is a QGIS-based graphical user interface that facilitates linking [APEX]
 
 This repository contains source codes and an executable for the Alpha version of APEXMOD.
 - __[Installer](https://github.com/spark-brc/APEXMOD/releases/tag/1.0.a):__ APEXMOD 1.0.a.exe
-- **[Inputs](https://drive.google.com/drive/folders/1FPpKub6IljjjncCjxZeV6LIsZ-HpYsJP?usp=sharing):** Animas Dataset zip file
+- **[Inputs](https://github.com/spark-brc/APEXMOD/raw/master/Inputs/Animas.zip):** Animas Dataset zip file
 - **[Source Code](https://github.com/spark-brc/APEXMOD/tree/master/APEXMOD)**
 - **[Tutorial Document](https://github.com/spark-brc/qswatmod/blob/master/QSWATMOD%20Tutorial.pdf)** will be provided soon!
 
