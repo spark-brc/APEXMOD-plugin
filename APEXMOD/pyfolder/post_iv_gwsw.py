@@ -332,11 +332,11 @@ def plot_gwsw(self):
         ax.tick_params(top=False, bottom=True, left=True, right=False)
     # colorbar
     if self.dlg.checkBox_gwsw_colorbar.isChecked():
-        cbaxes = fig.add_axes([0.3, 0.08, 0.4, 0.02])
+        cbaxes = fig.add_axes([0.3, 0.05, 0.4, 0.02])
         cb = plt.colorbar(cax=cbaxes, orientation="horizontal")
         cb.ax.tick_params(labelsize=7)
         # cb.ax.invert_yaxis()
-        cb.ax.set_title('Groundwater Discharge [$m^3/day$]', fontsize=8,
+        cb.ax.set_title(' - To Stream   |   + To Aquifer\n[$m^3/day$]', fontsize=8,
                         # position=(1.05, 0.17),
                         horizontalalignment='center',
                         # y = 1.05,
@@ -348,7 +348,7 @@ def plot_gwsw(self):
         for rv in (river.shapeRecords()):
             rx = [i[0] for i in rv.shape.points[:]]
             ry = [i[1] for i in rv.shape.points[:]]
-            ax.plot(rx, ry, lw = 1, c = 'b')
+            ax.plot(rx, ry, lw=1, c='b', alpha=0.5)
     # Boundary
     if self.dlg.checkBox_gwsw_boundary.isChecked():     
         for sb in (sub.shapeRecords()):
@@ -526,11 +526,11 @@ def plot_gwsw_ani (self):
 
         # colorbar
         if self.dlg.checkBox_gwsw_colorbar.isChecked():
-            cbaxes = fig.add_axes([0.3, 0.08, 0.4, 0.02])
+            cbaxes = fig.add_axes([0.3, 0.05, 0.4, 0.02])
             cb = plt.colorbar(cax = cbaxes, orientation="horizontal")
             cb.ax.tick_params(labelsize= 7)
             # cb.ax.invert_yaxis()
-            cb.ax.set_title('Groundwater Discharge [$m^3/day$]', fontsize = 8,
+            cb.ax.set_title(' - To Stream   |   + To Aquifer\n[$m^3/day$]', fontsize = 8,
                             # position=(1.05, 0.17),
                             horizontalalignment = 'center',
             #               y = 1.05,
@@ -543,7 +543,7 @@ def plot_gwsw_ani (self):
             for rv in (river.shapeRecords()):
                 rx = [i[0] for i in rv.shape.points[:]]
                 ry = [i[1] for i in rv.shape.points[:]]
-                ax.plot(rx, ry, lw = 1, c = 'b')
+                ax.plot(rx, ry, lw = 1, c = 'b', alpha=0.5)
         # Boundary
         if self.dlg.checkBox_gwsw_boundary.isChecked():     
             for sb in (sub.shapeRecords()):

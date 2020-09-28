@@ -8,6 +8,7 @@ from qgis.PyQt import QtCore, QtGui, QtSql
 from qgis.PyQt.QtCore import QCoreApplication
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
+from matplotlib.ticker import FormatStrFormatter
 import numpy as np
 import pandas as pd
 import os
@@ -215,11 +216,14 @@ def plot_wb_dToM_A(self):
                 )    
     df.index = pd.date_range(startDate, periods=len(df))
     df = df[['RFV', 'ET', 'Q', 'SSF', 'PRK', 'DPRK', 'RSSF', 'SW']]
-    df['DP'] = df['RFV'] - df['ET'] - df['Q'] - df['SSF'] + df['PRK'] + df['DPRK']
+    df['DP'] = (df['RFV'] - df['ET'] - df['Q'] - df['SSF'] + df['PRK'] + df['DPRK'])*0.5
+    df[df['DP'] < 0] = 0
+    df['DP'] = df['DP'].apply(lambda x: round(x, 2))
+
     df['RSSF'] = df['RSSF'] + 0.001
 
     # FIXME: hard code
-    df['GW'] = 208 + df['RFV']*0.5
+    df['GW'] = 20 + df['RFV']*0.5
     df['SWGW'] = 0 + df['RSSF']*0.3
     df['SW'] = (df['RFV']*0.2) + (df['RSSF']*0.3) + (df['GW']/40)
     # --------------------------------------------
@@ -347,7 +351,9 @@ def plot_wb_dToM_A(self):
         -1*(dff.SWGW + dff.DP).max(),
         (dff.RSSF + dff.SSF + dff.Q).max())
     axes[2].tick_params(axis='both', labelsize=8)
-    axes[2].set_yticklabels([float(abs(x)) for x in axes[2].get_yticks()])
+    # axes[2].yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    axes[2].set_yticklabels([round(float(abs(x)), 2) for x in axes[2].get_yticks()])
+
     # ===
     axes[3].bar(
         dff.index, dff.GW, width * widthExg,
@@ -894,14 +900,16 @@ def export_wb_d(self):
                 )    
     df.index = pd.date_range(startDate, periods=len(df))
     df = df[['RFV', 'ET', 'Q', 'SSF', 'PRK', 'DPRK', 'RSSF', 'SW']]
-    df['DP'] = df['RFV'] - df['ET'] - df['Q'] - df['SSF'] + df['PRK'] + df['DPRK']
+    df['DP'] = (df['RFV'] - df['ET'] - df['Q'] - df['SSF'] + df['PRK'] + df['DPRK'])*0.5
+    df[df['DP'] < 0] = 0
+    df['DP'] = df['DP'].apply(lambda x: round(x, 2))
+
     df['RSSF'] = df['RSSF'] + 0.001
 
     # FIXME: hard code
-    df['GW'] = 208 + df['RFV']*0.5
+    df['GW'] = 20 + df['RFV']*0.5
     df['SWGW'] = 0 + df['RSSF']*0.3
     df['SW'] = (df['RFV']*0.2) + (df['RSSF']*0.3) + (df['GW']/40)
-
     # --------------------------------------------
     df.index = pd.date_range(startDate, periods=len(df))
     ssdate = self.dlg.comboBox_std_sdate.currentText()
