@@ -10,7 +10,9 @@ from qgis.PyQt import QtCore, QtGui, QtSql
 from qgis.PyQt.QtCore import QCoreApplication
 import datetime
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import matplotlib.animation as animation
+from matplotlib.colors import Normalize
 import matplotlib.dates as mdates
 import numpy as np
 import pandas as pd
@@ -174,7 +176,7 @@ def create_sm_riv(self):
         layer = QgsProject.instance().addMapLayer(layer)
 
 
-def plot_gwsw(self):
+def plot_gwsw_org(self):
     import scipy.stats as ss
     import operator
     import numpy as np
@@ -222,7 +224,7 @@ def plot_gwsw(self):
         for num, line in enumerate(data1, 1):
             if ((line[0] == "month:" in line) and (line[1] == onlyDate_lookup in line) and (line[3] == str(year) in line)):
                 ii = num # Starting line
-    elif self.dlg.amf_MF_gwsw_monthly.out.isChecked():
+    elif self.dlg.radioButton_gwsw_year.isChecked():
         filename = "amf_MF_gwsw_yearly.out"
         with open(os.path.join(wd, filename), "r") as f:
             data = [x.strip() for x in f if x.strip() and not x.strip().startswith(y)]  
@@ -271,7 +273,7 @@ def plot_gwsw(self):
     # gwsw_f = f_c['gwsw'].values
 
     # gwsw_ff = gwsw_f.astype('int')
-    ranks = ss.rankdata(gwsw_f, method = 'dense')
+    ranks = ss.rankdata(gwsw_f, method='dense')
 
     # colored bar with their ranks
     if self.dlg.checkBox_color_reverse.isChecked():
@@ -279,21 +281,21 @@ def plot_gwsw(self):
     else:
         color = self.dlg.comboBox_colormaps.currentText()
     colormap = plt.cm.get_cmap(color)
-    # colors = plt.cm.autumn(gwsw_f/gwsw_f.max())
 
-    colors = [colormap(i) for i in np.linspace(0, 10, len(gwsw_f))] # Okay, 10 is weird.
-    recols = [colors[(int(rank)-1)] for rank in ranks]
 
     if self.dlg.checkBox_darktheme.isChecked():
         plt.style.use('dark_background')
     else:
-        plt.style.use('default')    
-
+        plt.style.use('default')
+    
     fig, ax = plt.subplots()
     fig.subplots_adjust(left = 0.1, right = 0.9, top = 0.9, bottom = 0.2, hspace=0.2, wspace=0.1)
     ax1 = fig.add_subplot(111, frameon=False)
     ax1.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
-    ax1 = plt.imshow(np.array([[gwsw_f.max(), gwsw_f.min()]]), cmap = plt.cm.get_cmap(color))
+    
+    # NOTE: temp: gives max and min for a paper
+    ax1 = plt.imshow(np.array([[420000, -620000]]), cmap = plt.cm.get_cmap(color))
+    # ax1 = plt.imshow(np.array([[gwsw_f.max(), gwsw_f.min()]]), cmap = plt.cm.get_cmap(color))
     ax1.set_visible(False)
     ax.tick_params(axis='both', labelsize=6)
 
@@ -363,10 +365,242 @@ def plot_gwsw(self):
         ax.set_ylim([y_axis_min, y_axis_max])
     # set size!
     ax.imshow(np.random.random((10, 10)), extent=[x_min, x_max, y_min, y_max], alpha=0)
-    ax.bar(f_c.x_min, (gwsw_f*-1*verExg),
-           bottom=f_c.y_min,
-           width=width * widthExg, align='center',
-           alpha=0.7, color=recols, zorder=3)
+
+    # NOTE: TEMP
+    colors = [colormap(i) for i in np.linspace(0, 10, len(gwsw_f))] # Okay, 10 is weird.
+    # v = np.linspace(-620000, 420000, len(gwsw_f), endpoint=True)
+    # v = [colormap(i) for i in np.linspace(-620000, 420000, len(gwsw_f))]
+    # recols = [colors[(int(rank)-1)] for rank in ranks]
+    ax.bar(
+            f_c.x_min, (gwsw_f*-1*verExg),
+            bottom=f_c.y_min,
+            width=width * widthExg, align='center',
+            alpha=0.7, color=colors, zorder=3,)
+
+    # NOTE:
+    plt.savefig(os.path.join(wd, 'fig_{}.png'.format(selectedDate)), transparent=True, dpi=300)
+    plt.show()
+
+def plot_gwsw(self):
+    import scipy.stats as ss
+    import operator
+    import numpy as np
+
+    APEXMOD_path_dict = self.dirs_and_paths()
+    stdate, eddate = self.define_sim_period()
+    wd = APEXMOD_path_dict['MODFLOW']
+    startDate = stdate.strftime("%m-%d-%Y")
+    # Open "amf_MF_gwsw.out" file
+    y = ("for", "Positive:", "Negative:", "Daily", "Monthly", "Annual", "Layer,")  # Remove unnecssary lines
+    selectedDate = self.dlg.comboBox_gwsw_dates.currentText()
+
+    if self.dlg.radioButton_gwsw_day.isChecked():
+        filename = "amf_MF_gwsw.out"
+        with open(os.path.join(wd, filename), "r") as f:
+            data = [x.strip() for x in f if x.strip() and not x.strip().startswith(y)] # Remove blank lines
+        date = [x.strip().split() for x in data if x.strip().startswith("Day:")] # Collect only lines with dates
+        onlyDate = [x[1] for x in date]  # Only date
+        data1 = [x.split() for x in data]  # make each line a list
+        sdate = datetime.datetime.strptime(startDate, "%m-%d-%Y") # Change startDate format
+        dateList = [(sdate + datetime.timedelta(days=int(i)-1)).strftime("%m-%d-%Y") for i in onlyDate]
+
+        # Reverse step
+        dateIdx = dateList.index(selectedDate)
+        #only
+        onlyDate_lookup = onlyDate[dateIdx]
+        for num, line in enumerate(data1, 1):
+            if line[0] == "Day:" in line and line[1] == onlyDate_lookup in line:
+                ii = num # Starting line
+    elif self.dlg.radioButton_gwsw_month.isChecked():
+        filename = "amf_MF_gwsw_monthly.out"
+        with open(os.path.join(wd, filename), "r") as f:
+            data = [x.strip() for x in f if x.strip() and not x.strip().startswith(y)]  
+        date = [x.strip().split() for x in data if x.strip().startswith("month:")]
+        data1 = [x.split() for x in data]
+        onlyDate = [x[1] for x in date] 
+        dateList = pd.date_range(startDate, periods=len(onlyDate), freq='M').strftime("%b-%Y").tolist()
+        # Reverse step
+        dateIdx = dateList.index(selectedDate)
+        # Find year 
+        dt = datetime.datetime.strptime(selectedDate, "%b-%Y")
+        year = dt.year
+        # only
+        onlyDate_lookup = onlyDate[dateIdx]
+        for num, line in enumerate(data1, 1):
+            if ((line[0] == "month:" in line) and (line[1] == onlyDate_lookup in line) and (line[3] == str(year) in line)):
+                ii = num # Starting line
+    elif self.dlg.radioButton_gwsw_year.isChecked():
+        filename = "amf_MF_gwsw_yearly.out"
+        with open(os.path.join(wd, filename), "r") as f:
+            data = [x.strip() for x in f if x.strip() and not x.strip().startswith(y)]  
+        date = [x.strip().split() for x in data if x.strip().startswith("year:")]
+        data1 = [x.split() for x in data]
+        onlyDate = [x[1] for x in date] 
+        dateList = pd.date_range(startDate, periods=len(onlyDate), freq='A').strftime("%Y").tolist()
+
+        # Reverse step
+        dateIdx = dateList.index(selectedDate)
+        #only
+        onlyDate_lookup = onlyDate[dateIdx]
+        for num, line in enumerate(data1, 1):
+            if line[0] == "year:" in line and line[1] == onlyDate_lookup in line:
+                ii = num # Starting line
+    else:
+        msgBox = QMessageBox()
+        msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
+        msgBox.setWindowTitle("Oops!")
+        msgBox.setText("Please, select one of the time options!")
+        msgBox.exec_()
+
+    #### Layer
+    orgGIS = APEXMOD_path_dict['org_shps']
+    smGIS = APEXMOD_path_dict['apexmf_shps']
+    river = shapefile_sm.Reader(os.path.join(orgGIS, "riv_apex.shp" )) # River
+    sub = shapefile_sm.Reader(os.path.join(orgGIS, "mf_boundary.shp" )) # dissolved sub
+    apexmf_riv = shapefile_sm.Reader(os.path.join(smGIS, "apexmf_riv.shp"))
+
+    # ------------------------------------------------------------------------------
+    sr = apexmf_riv.shapes() # property of sm_river
+    coords = [sr[i].bbox for i in range(len(sr))] # get coordinates for each river cell
+    width = abs(coords[0][2] - coords[0][0]) # get width for bar plot
+    nSM_riv = len(sr) # Get number of river cells
+    mf_gwsws = [data1[i][0] for i in range(ii, ii + nSM_riv)] # get gwsw data ranging from ii to 
+
+    # Sort coordinates by row
+    c_sorted = sorted(coords, key=operator.itemgetter(0))
+
+    # Put coordinates and gwsw data in Dataframe together
+    f_c = pd.DataFrame(c_sorted, columns=['x_min', 'y_min', 'x_max', 'y_max'])
+    f_c['gwsw'] = mf_gwsws
+    f_c['gwsw'] = f_c['gwsw'].astype('float') 
+
+    #### ==========================================================================
+    gwsw_f = f_c['gwsw'].astype('float') 
+    # gwsw_f = f_c['gwsw'].values
+
+    # gwsw_ff = gwsw_f.astype('int')
+    ranks = ss.rankdata(gwsw_f, method='dense')
+
+    # colored bar with their ranks
+    if self.dlg.checkBox_color_reverse.isChecked():
+        color = self.dlg.comboBox_colormaps.currentText() + '_r'
+    else:
+        color = self.dlg.comboBox_colormaps.currentText()
+    colormap = plt.cm.get_cmap(color)
+
+
+    if self.dlg.checkBox_darktheme.isChecked():
+        plt.style.use('dark_background')
+    else:
+        plt.style.use('default')
+    
+    fig, ax = plt.subplots()
+    fig.subplots_adjust(left = 0.1, right = 0.9, top = 0.9, bottom = 0.2, hspace=0.2, wspace=0.1)
+    ax1 = fig.add_subplot(111, frameon=False)
+    ax1.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
+    
+    # NOTE: temp: gives max and min for a paper
+    ax1 = plt.imshow(np.array([[-450, 450]]), cmap = plt.cm.get_cmap(color))
+    # ax1 = plt.imshow(np.array([[gwsw_f.max(), gwsw_f.min()]]), cmap = plt.cm.get_cmap(color))
+    ax1.set_visible(False)
+    ax.tick_params(axis='both', labelsize=6)
+
+    ### Get extent
+    self.layer = QgsProject.instance().mapLayersByName("sub (APEX)")[0]
+    extent = self.layer.extent()
+    x_min = extent.xMinimum()
+    x_max = extent.xMaximum()
+    y_min = extent.yMinimum()
+    y_max = extent.yMaximum()
+
+    ### User inputs ===========================================================================
+    widthExg = float(self.dlg.doubleSpinBox_w_exag.value())
+    verExg = float(self.dlg.doubleSpinBox_h_exag.value())*0.01
+    # verExg = float(0.01)
+
+    # Title
+    if self.dlg.checkBox_gwsw_title.isChecked():
+        ax.set_title('- {} -'.format(selectedDate), loc = 'left', fontsize = 8, fontweight = 'bold' )
+
+    # frame
+    if self.dlg.checkBox_gwsw_frame.isChecked():
+        ax.axis('on') # -> takes ticks too.
+    else:
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+        # ax.axis('off')
+
+    # coordinates
+    if not self.dlg.checkBox_gwsw_coords.isChecked():
+        ax.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)        
+    else:
+        # ax.tick_params(top='off', bottom='on', left='on', right='off')
+        ax.tick_params(top=False, bottom=True, left=True, right=False)
+    # colorbar
+    if self.dlg.checkBox_gwsw_colorbar.isChecked():
+        cbaxes = fig.add_axes([0.3, 0.05, 0.4, 0.02])
+        cb = plt.colorbar(cax=cbaxes, orientation="horizontal")
+        cb.ax.tick_params(labelsize=7)
+        # cb.ax.invert_yaxis()
+        cb.ax.set_title(' - To Stream   |   + To Aquifer\n[$m^3/day$]', fontsize=8,
+                        # position=(1.05, 0.17),
+                        horizontalalignment='center',
+                        # y = 1.05,
+                        # fontweight='semibold',
+                        # transform=axes[0,0].transAxes
+                        )
+    # River
+    if self.dlg.checkBox_gwsw_river.isChecked():
+        for rv in (river.shapeRecords()):
+            rx = [i[0] for i in rv.shape.points[:]]
+            ry = [i[1] for i in rv.shape.points[:]]
+            ax.plot(rx, ry, lw=1, c='b', alpha=0.5)
+    # Boundary
+    if self.dlg.checkBox_gwsw_boundary.isChecked():     
+        for sb in (sub.shapeRecords()):
+            sx = [i[0] for i in sb.shape.points[:]]
+            sy = [i[1] for i in sb.shape.points[:]]
+            ax.plot(sx, sy, lw = 0.5, c = 'grey')
+
+    # ----------------------------------------------------------------------------------------
+    if self.dlg.checkBox_gwsw_yaxes.isChecked():
+        y_axis_min = float(self.dlg.lineEdit_gwsw_y_min.text())
+        y_axis_max = float(self.dlg.lineEdit_gwsw_y_max.text())
+        ax.set_ylim([y_axis_min, y_axis_max])
+    # set size!
+    ax.imshow(np.random.random((10, 10)), extent=[x_min, x_max, y_min, y_max], alpha=0)
+
+    # NOTE: TEMP
+    # dicharge = f_c[f_c['gwsw'] < 0]
+    # seepage = f_c[f_c['gwsw'] > 0]
+
+
+    # # recols = [colors[(int(rank)-1)] for rank in ranks]
+    # ax.bar(
+    #         dicharge.x_min, (dicharge.gwsw.astype('float')*-1*verExg),
+    #         bottom=dicharge.y_min,
+    #         width=width * widthExg, align='center',
+    #         alpha=0.7, color='red', zorder=3,)
+    # ax.bar(
+    #         seepage.x_min, (seepage.gwsw.astype('float')*-1*verExg),
+    #         bottom=seepage.y_min,
+    #         width=width * widthExg, align='center',
+    #         alpha=0.7, color='b', zorder=3,)
+    # get normalize function (takes data in range [vmin, vmax] -> [0, 1])
+    # my_norm = Normalize(vmin=gwsw_f.min(), vmax=gwsw_f.max())
+    my_norm = Normalize(vmin=-450, vmax=450)
+    ax.bar(
+            f_c.x_min, (gwsw_f*-1*verExg),
+            bottom=f_c.y_min,
+            width=width * widthExg, align='center',
+            alpha=0.7, color=colormap(my_norm(np.array(gwsw_f))), zorder=3,)    
+
+
+
+    # NOTE:
+    plt.savefig(os.path.join(wd, 'fig_{}.png'.format(selectedDate)), transparent=True, dpi=300)
     plt.show()
 
 
@@ -693,7 +927,9 @@ def export_gwsw(self):
     coords = [sr[i].bbox for i in range(len(sr))] # get coordinates for each river cell
     width = abs(coords[0][2] - coords[0][0]) # get width for bar plot
     nSM_riv = len(sr) # Get number of river cells
-    mf_gwsws = [data1[i][3] for i in range(ii, ii + nSM_riv)] # get gwsw data ranging from ii to 
+    # mf_gwsws = [data1[i][3] for i in range(ii, ii + nSM_riv)] # get gwsw data ranging from ii to 
+    # temp for monthly average -> it doesn't have column and row ids
+    mf_gwsws = [data1[i][0] for i in range(ii, ii + nSM_riv)] # get gwsw data ranging from ii to 
 
     # Sort coordinates by row
     c_sorted = sorted(coords, key=operator.itemgetter(0))

@@ -87,6 +87,7 @@ def read_strObd(self):
                                     wd + "\\streamflow.obd",
                                     delim_whitespace=True,
                                     index_col=0,
+                                    na_values=[-999, ""],
                                     parse_dates=True)
 
             strObd_list = list(strObd)
@@ -145,7 +146,7 @@ def sd_plot_daily(self):
                             header=0,
                             parse_dates=True,
                             delimiter="\t",
-                            # na_values=-999
+                            na_values=[-999, ""],
                             )
         output_rch = pd.read_csv(
                             os.path.join(wd, rch_file),
@@ -311,6 +312,7 @@ def sd_plot_monthly(self):
                             header = 0,
                             parse_dates=True,
                             delimiter = "\t",
+                            na_values=[-999, ""],
                             )
         output_rch = pd.read_csv(
                             os.path.join(wd, rch_file),
@@ -457,6 +459,7 @@ def sd_plot_annual(self):
                                 index_col = 0,
                                 header = 0,
                                 parse_dates=True,
+                                na_values=[-999, ""],
                                 delimiter = "\t")
 
         output_rch = pd.read_csv(
@@ -621,6 +624,7 @@ def sd_plot_month_to_year(self):
                             index_col = 0,
                             header = 0,
                             parse_dates=True,
+                            na_values=[-999, ""],
                             delimiter = "\t")
         output_rch = pd.read_csv(
                             os.path.join(wd, rch_file),
@@ -777,6 +781,7 @@ def export_sd_daily(self):
                             index_col = 0,
                             header = 0,
                             parse_dates=True,
+                            na_values=[-999, ""],
                             delimiter = "\t")
         output_rch = pd.read_csv(
                             os.path.join(wd, rch_file),

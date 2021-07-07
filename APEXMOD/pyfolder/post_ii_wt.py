@@ -109,10 +109,11 @@ def wt_plot_daily(self):
         wtObd = pd.read_csv(
                             os.path.join(wd, "modflow.obd"),
                             sep='\s+',
-                            index_col = 0,
-                            header = 0,
+                            index_col=0,
+                            header=0,
                             parse_dates=True,
-                            delimiter = "\t")
+                            na_values=[-999, ""],
+                            delimiter="\t")
         output_wt = pd.read_csv(
                             os.path.join(wd, "apexmf_out_MF_obs"),
                             delim_whitespace=True,
@@ -154,7 +155,6 @@ def wt_plot_daily(self):
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d\n%Y'))
 
         if (len(df3[wt_ob]) > 1):
-
             ## R-squared
             r_squared = (
                 (
@@ -165,15 +165,12 @@ def wt_plot_daily(self):
                     (sum((df3[wt_ob] - df3[wt_ob].mean())**2)* (sum((df3[grid_id]-df3[grid_id].mean())**2))
                 ))
             )
-
             ##Nash–Sutcliffe (E) model efficiency coefficient ---used up in the class
             dNS = 1 - (
                 sum((df3[grid_id] - df3[wt_ob])**2) /
                 sum((df3[wt_ob] - (df3[wt_ob]).mean())**2))
-
             ## PBIAS
             PBIAS =  100*(sum(df3[wt_ob] - df3[grid_id]) / sum(df3[wt_ob]))
-
             ####
             ax.text(
                 .01, 0.95, u'Nash–Sutcliffe: '+ "%.4f" % dNS,
@@ -181,35 +178,30 @@ def wt_plot_daily(self):
                 horizontalalignment='left',
                 color='lime',
                 transform=ax.transAxes)
-
             ax.text(
                 .01, 0.90, r'$R^2$: '+ "%.4f" % r_squared,
                 fontsize=8,
                 horizontalalignment='left',
                 color='lime',
                 transform=ax.transAxes)
-
             ax.text(
                 .99, 0.95, u'PBIAS: '+ "%.4f" % PBIAS,
                 fontsize = 8,
                 horizontalalignment='right',
                 color='lime',
                 transform=ax.transAxes)
-
         else:
             ax.text(
                 .01,.95, u'Nash–Sutcliffe: '+ u"---",
                 fontsize = 8,
                 horizontalalignment='left',
                 transform=ax.transAxes)
-
             ax.text(
                 .01, 0.90, r'$R^2$: '+ u"---",
                 fontsize = 8,
                 horizontalalignment='left',
                 color='lime',
                 transform=ax.transAxes)
-
             ax.text(
                 .99, 0.95, u'PBIAS: ' + u"---",
                 fontsize = 8,
@@ -223,7 +215,6 @@ def wt_plot_daily(self):
                             delim_whitespace=True,
                             skiprows = 1,
                             names = grid_id_lst,)
-
         try:
             if self.dlg.checkBox_depthTowater.isChecked():
                 # Calculate depth to water (Simulated watertable - landsurface)
@@ -238,11 +229,9 @@ def wt_plot_daily(self):
                 ax.set_title(
                             u'Daily Watertable Elevation' + u" @ Grid id: " + grid_id, fontsize = 10,
                             loc='left')
-
             df.index = pd.date_range(startDate, periods=len(df))
             ax.plot(df.index, df, c = 'dodgerblue', lw = 1, label = "Simulated")
             ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d\n%Y'))
-
         except:
             ax.text(.5,.5, u"Running the simulation for a warm-up period!",
                     fontsize = 12,

@@ -294,7 +294,7 @@ class APEXMOD(object):
         self.dlg.comboBox_colormaps.clear()
         self.dlg.comboBox_colormaps.addItems(
             ['gist_rainbow', 'rainbow', 'jet', 'spring', 'summer', 'autumn',
-                'winter', 'cool', 'gray'])
+                'winter', 'cool', 'gray', 'Spectral'])
 
         # === plot
         self.dlg.pushButton_plot_sd.clicked.connect(self.plot_sd)
@@ -1432,7 +1432,7 @@ class APEXMOD(object):
 
     
 
-    # # It's amazing how i figured it out by trials and errors -------------------------------
+    # figured it out by trials and errors -------------------------------
     # def loadDEM_main(self):
     #   class_mf = createMFmodelDialog(self) # make the class the object
     #   # class_mf.loadDEM() # Does it make run?
