@@ -9,10 +9,3 @@ Optional output for APEX-MODFLOW (0=no; 1=yes)
 1	Groundwater/Surface Water Exchange (m3/day) (for each MODFLOW River Cell)
 1	Groundwater/Surface Water Exchange (m3/day) (for each APEX subarea)
 1       Flag for writing monthly and annual average output for APEX-MODFLOW variables
-# == Frequency of writing results from the simulation == 
-2
-1
-100
-Groundwater delay
-0	0 = read in a single value for all Subareas; 1 = read in one value for each Subarea
-5	GW_DELAY : Groundwater delay [days]
