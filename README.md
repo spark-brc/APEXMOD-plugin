@@ -8,7 +8,7 @@ This repository contains source codes and an executable for the Alpha version of
 - __[Installer](https://github.com/spark-brc/APEXMOD/releases/tag/1.0.a):__ APEXMOD 1.0.a.exe
 - **[Inputs](https://github.com/spark-brc/APEXMOD/raw/master/Inputs/Animas.zip):** Animas Dataset zip file
 - **[Source Code](https://github.com/spark-brc/APEXMOD/tree/master/APEXMOD)**
-- **[Tutorial Document (example)](https://github.com/spark-brc/qswatmod/blob/master/QSWATMOD%20Tutorial.pdf)** will be provided soon!
+- **[Tutorial Document (example)]()** will be provided soon!
 
 -----
 # <img src="./imgs/icon2.png" style="float" width="80" align="center"> &nbsp; Installation
