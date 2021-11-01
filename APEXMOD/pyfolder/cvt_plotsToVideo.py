@@ -5,7 +5,7 @@ from qgis.core import (
 from qgis.PyQt import QtCore, QtGui, QtSql  
 from qgis.PyQt.QtCore import QCoreApplication              
 from PyQt5.QtWidgets import QMessageBox
-import cv2
+# import cv2
 
 
 def cvt_plotsToVideo(self):
