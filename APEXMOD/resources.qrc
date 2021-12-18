@@ -2,6 +2,7 @@
   <qresource prefix="APEXMOD">
     <file>pics/blm-logo.png</file>
     <file>pics/am_icon.png</file>
+    <file>pics/am_icon_1.png</file>
     <file>pics/flopylogo_sg.png</file>
     <file>pics/modflow_obs.png</file>
     <file>pics/USDAcolor.png</file>

@@ -495,7 +495,7 @@ def plot_gwsw(self):
         plt.style.use('default')
     
     fig, ax = plt.subplots()
-    fig.subplots_adjust(left = 0.1, right = 0.9, top = 0.9, bottom = 0.2, hspace=0.2, wspace=0.1)
+    fig.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.2, hspace=0.2, wspace=0.1)
     ax1 = fig.add_subplot(111, frameon=False)
     ax1.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
     
