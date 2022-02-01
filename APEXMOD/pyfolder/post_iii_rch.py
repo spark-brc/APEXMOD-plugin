@@ -94,16 +94,16 @@ def read_mf_recharge_dates(self):
         self.dlg.comboBox_mf_results_edate.setCurrentIndex(len(dateList)-1)
 
         # Copy mf_grid shapefile to apexmf_results tree
-        name_ext = "mf_rch_monthly.gpkg"
+        name_ext = "mf_recharge_mon.gpkg"
         output_dir = APEXMOD_path_dict['apexmf_shps']
 
         # Check if there is an exsting mf_recharge shapefile
-        if not any(lyr.name() == ("mf_rch_monthly") for lyr in list(QgsProject.instance().mapLayers().values())):
+        if not any(lyr.name() == ("mf_recharge_mon") for lyr in list(QgsProject.instance().mapLayers().values())):
             mf_rch_shapfile = os.path.join(output_dir, name_ext)
             options = QgsVectorFileWriter.SaveVectorOptions()
             options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
             QgsVectorFileWriter.writeAsVectorFormat(input1, mf_rch_shapfile, options)
-            layer = QgsVectorLayer(mf_rch_shapfile, '{0}'.format("mf_rch_monthly"), 'ogr')
+            layer = QgsVectorLayer(mf_rch_shapfile, '{0}'.format("mf_recharge_mon"), 'ogr')
             # Put in the group
             root = QgsProject.instance().layerTreeRoot()
             apexmf_results = root.findGroup("apexmf_results")   
@@ -113,7 +113,7 @@ def read_mf_recharge_dates(self):
             msgBox = QMessageBox()
             msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
             msgBox.setWindowTitle("Created!")
-            msgBox.setText("'mf_rch_monthly.gpkg' file is created in 'apexmf_results' group!")
+            msgBox.setText("'mf_recharge_mon.gpkg' file is created in 'apexmf_results' group!")
             msgBox.exec_()
 
     elif self.dlg.checkBox_recharge.isChecked() and self.dlg.radioButton_mf_results_y.isChecked():
@@ -179,7 +179,7 @@ def export_mf_recharge(self):
         dateList = [(sdate + datetime.timedelta(days=int(i)-1)).strftime("%m-%d-%Y") for i in onlyDate]
     elif self.dlg.radioButton_mf_results_m.isChecked():
         filename = "amf_MF_recharge_monthly.out"
-        self.layer = QgsProject.instance().mapLayersByName("mf_rch_monthly")[0]
+        self.layer = QgsProject.instance().mapLayersByName("mf_recharge_mon")[0]
         with open(os.path.join(wd, filename), "r") as f:
             data = [x.strip() for x in f if x.strip() and not x.strip().startswith(y)] # Remove blank lines     
         date = [x.strip().split() for x in data if x.strip().startswith("month:")] # Collect only lines with dates  

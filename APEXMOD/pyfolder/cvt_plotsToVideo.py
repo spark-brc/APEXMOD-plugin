@@ -5,7 +5,7 @@ from qgis.core import (
 from qgis.PyQt import QtCore, QtGui, QtSql  
 from qgis.PyQt.QtCore import QCoreApplication              
 from PyQt5.QtWidgets import QMessageBox
-import cv2
+# import cv2
 
 
 def cvt_plotsToVideo(self):
@@ -56,7 +56,7 @@ def cvt_plotsToVideo(self):
 
     # Release everything if job is finished 
     out.release()
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
     questionBox = QMessageBox()
     questionBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
     reply = QMessageBox.question(

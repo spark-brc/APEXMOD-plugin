@@ -916,7 +916,7 @@ def export_wb_d(self):
     sedate = self.dlg.comboBox_std_edate.currentText()
     # Add info
     from datetime import datetime
-    version = "version 1.0."
+    version = "version 1.2."
     time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
     msgBox = QMessageBox()
     msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
@@ -992,7 +992,7 @@ def export_wb_m(self):
     sedate = self.dlg.comboBox_std_edate.currentText()
     # Add info
     from datetime import datetime
-    version = "version 1.0."
+    version = "version 1.2."
     time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
     msgBox = QMessageBox()
     msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
@@ -1060,7 +1060,7 @@ def export_wb_a(self):
     dff = data[ssdate:sedate]
     # Add info
     from datetime import datetime
-    version = "version 1.0."
+    version = "version 1.2."
     time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
     with open(os.path.join(outfolder, "wb_annual_total.txt"), 'w') as f:
         f.write("# Annual total water balance [mm] - APEXMOD Plugin " + version + time + "\n")

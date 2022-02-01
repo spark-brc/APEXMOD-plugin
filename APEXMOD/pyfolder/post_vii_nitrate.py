@@ -12,19 +12,79 @@ import datetime
 import pandas as pd
 import os
 import glob
-from PyQt5.QtGui import QIcon, QColor, QImage, QPainter
+from PyQt5.QtGui import QIcon, QColor, QImage, QPainter, QPen, QFont
 from PyQt5.QtWidgets import QMessageBox
-from qgis.PyQt.QtCore import QVariant, QCoreApplication, QSize
+from qgis.PyQt.QtCore import QVariant, QCoreApplication, QSize, Qt, QPoint, QRect
 import calendar
 import processing
 from qgis.gui import QgsMapCanvas
 import glob
 from PIL import Image
 
+
+def comps_dic():
+    comps_dic = {
+        'NO3': 'Nitrate',
+        'P': 'Phosphorus',
+        'SO4': 'Sulfate',
+        'Ca2': 'Calcium',
+        'Mg2': 'Magnesium',
+        'Na': 'Sodium',
+        'K': 'Potassium',
+        'Cl': 'Chloride',
+        'CO3': 'Carbonate',
+        'HCO3': 'Bicarbonate'}
+    
+    # available comps list
+    comps =  [i.lower() for i in comps_dic.values()]
+    new_comps = []
+    for i in comps:
+        if i == 'nitrate' or i == 'phosphorus':
+            i = 'rt3d_' + i
+        else:
+            i = 'salt_' + i
+        new_comps.append(i)
+    suffixs = ['_mon', '_yr', '_avg_mon']
+
+    new_comps2 = []
+    for comp in new_comps:
+        for suf in suffixs:
+            new_comps2.append(comp + suf)
+    return comps_dic, new_comps2
+
+def get_compNames(self):
+    comps, new_comps2 = comps_dic()
+    APEXMOD_path_dict = self.dirs_and_paths()
+    wd = APEXMOD_path_dict['MODFLOW']
+    # find number of species
+    for filename in glob.glob(wd + "/*.btn"):            
+        with open(os.path.join(wd, filename), "r") as f:
+            lines = f.readlines()
+    for num, line in enumerate(lines, 1):
+        if line.startswith("'NCOMP,"):
+            lNumComp = num
+        if line.startswith("'SPECIES"):
+            lNumSpecies = num
+    data = [i.replace('\n', '').split() for i in lines]
+    nComp = data[lNumComp][0]
+    compNams = []
+    for i in range(lNumSpecies, lNumSpecies+ int(nComp)):
+        compNams.append(data[i][0].replace("'", ""))
+    fullnams = []
+    for i in compNams:
+        for j in comps.keys():
+            if i == j:
+                val = comps.get(j)
+                fullnams.append('{} ({})'.format(j, val))
+    fullnams = ["Select Solute"] + fullnams
+    self.dlg.comboBox_solutes.clear()
+    self.dlg.comboBox_solutes.addItems(fullnams)
+
+
 def read_mf_nOflayers(self):
-    QSWATMOD_path_dict = self.dirs_and_paths()
+    APEXMOD_path_dict = self.dirs_and_paths()
     # Find .dis file and read the number of layers
-    for filename in glob.glob(str(QSWATMOD_path_dict['SMfolder'])+"/*.dis"):
+    for filename in glob.glob(str(APEXMOD_path_dict['MODFLOW'])+"/*.dis"):
         with open(filename, "r") as f:
             data = []
             for line in f.readlines():
@@ -35,20 +95,76 @@ def read_mf_nOflayers(self):
     self.dlg.comboBox_rt_layer.clear()
     self.dlg.comboBox_rt_layer.addItems(lyList)
 
-
-def read_mf_nitrate_dates(self):
-    QSWATMOD_path_dict = self.dirs_and_paths()
-    stdate, eddate, stdate_warmup, eddate_warmup = self.define_sim_period()
-    wd = QSWATMOD_path_dict['SMfolder']
+def read_rt3d_dates(self):
+    APEXMOD_path_dict = self.dirs_and_paths()
+    stdate, eddate = self.define_sim_period()
+    wd = APEXMOD_path_dict['MODFLOW']
     startDate = stdate.strftime("%m-%d-%Y")
-    # Create swatmf_results tree inside 
+    filename = "amf_RT3D_cNO3_monthly.out"
+    # Open "swatmf_out_MF_head" file
+    y = ("Monthly") # Remove unnecssary lines
+    with open(os.path.join(wd, filename), "r") as f:
+        data = [x.strip() for x in f if x.strip() and not x.strip().startswith(y)] # Remove blank lines
+    date = [x.strip().split() for x in data if x.strip().startswith("month:")]  # Collect only lines with dates
+    onlyDate = [x[1] for x in date] # Only date
+    # data1 = [x.split() for x in data] # make each line a list
+    dateList = pd.date_range(startDate, periods=len(onlyDate), freq='M').strftime("%b-%Y").tolist()
+    self.dlg.comboBox_rt_results_sdate.clear()
+    self.dlg.comboBox_rt_results_sdate.addItems(dateList)
+    self.dlg.comboBox_rt_results_edate.clear()
+    self.dlg.comboBox_rt_results_edate.addItems(dateList)
+    self.dlg.comboBox_rt_results_edate.setCurrentIndex(len(dateList)-1)
+
+def create_rt3d_shps(self):
+    APEXMOD_path_dict = self.dirs_and_paths()
+    stdate, eddate = self.define_sim_period()
+    wd = APEXMOD_path_dict['MODFLOW']
+    startDate = stdate.strftime("%m-%d-%Y")
+    # Create apexmf_results tree inside 
     root = QgsProject.instance().layerTreeRoot()
-    if root.findGroup("swatmf_results"):
-        swatmf_results = root.findGroup("swatmf_results")
+    if root.findGroup("apexmf_results"):
+        apexmf_results = root.findGroup("apexmf_results")
     else:
-        swatmf_results = root.insertGroup(0, "swatmf_results")
+        apexmf_results = root.insertGroup(0, "apexmf_results")
     input1 = QgsProject.instance().mapLayersByName("mf_grid (MODFLOW)")[0]
     provider = input1.dataProvider()
+    comp = self.dlg.comboBox_solutes.currentText().replace('(', '').replace(')', '').strip().split()[1].lower()
+    name = "rt3d_{}_mon".format(comp)
+    name_ext = name + ".shp"
+    output_dir = APEXMOD_path_dict['apexmf_shps']
+    # Check if there is an exsting mf_head shapefile
+    if not any(lyr.name() == (name) for lyr in list(QgsProject.instance().mapLayers().values())):
+        mf_hd_shapfile = os.path.join(output_dir, name_ext)
+        QgsVectorFileWriter.writeAsVectorFormat(
+            input1, mf_hd_shapfile,
+            "utf-8", input1.crs(), "ESRI Shapefile")
+        layer = QgsVectorLayer(mf_hd_shapfile, '{0}'.format(name), 'ogr')
+        # Put in the group
+        root = QgsProject.instance().layerTreeRoot()
+        apexmf_results = root.findGroup("apexmf_results")
+        QgsProject.instance().addMapLayer(layer, False)
+        apexmf_results.insertChildNode(0, QgsLayerTreeLayer(layer))
+        msgBox = QMessageBox()
+        msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
+        msgBox.setWindowTitle("Created!")
+        msgBox.setText("'{}' layer has been created in 'apexmf_results' group!".format(name))
+        msgBox.exec_()
+
+
+def read_mf_nitrate_dates(self):
+    APEXMOD_path_dict = self.dirs_and_paths()
+    stdate, eddate = self.define_sim_period()
+    wd = APEXMOD_path_dict['MODFLOW']
+    startDate = stdate.strftime("%m-%d-%Y")
+    # Create apexmf_results tree inside 
+    root = QgsProject.instance().layerTreeRoot()
+    if root.findGroup("apexmf_results"):
+        apexmf_results = root.findGroup("apexmf_results")
+    else:
+        apexmf_results = root.insertGroup(0, "apexmf_results")
+    input1 = QgsProject.instance().mapLayersByName("mf_grid (MODFLOW)")[0]
+    provider = input1.dataProvider()
+    comp = self.dlg.comboBox_solutes.currentText().replace('(', '').replace(')', '').strip().split()[1].lower()
     '''
     if self.dlg.checkBox_head.isChecked() and self.dlg.radioButton_mf_results_d.isChecked():
         filename = "swatmf_out_MF_head"
@@ -66,10 +182,10 @@ def read_mf_nitrate_dates(self):
         self.dlg.comboBox_mf_results_edate.clear()
         self.dlg.comboBox_mf_results_edate.addItems(dateList)
         self.dlg.comboBox_mf_results_edate.setCurrentIndex(len(dateList)-1)
-        # Copy mf_grid shapefile to swatmf_results tree
+        # Copy mf_grid shapefile to apexmf_results tree
         name = "mf_rch_daily"
         name_ext = "mf_rch_daily.shp"
-        output_dir = QSWATMOD_path_dict['SMshps']
+        output_dir = APEXMOD_path_dict['apexmf_shps']
         # Check if there is an exsting mf_head shapefile
         if not any(lyr.name() == ("mf_rch_daily") for lyr in QgsProject.instance().mapLayers().values()):
             mf_rch_shapfile = os.path.join(output_dir, name_ext)
@@ -78,17 +194,18 @@ def read_mf_nitrate_dates(self):
             layer = QgsVectorLayer(mf_rch_shapfile, '{0}'.format("mf_rch_daily"), 'ogr')
             # Put in the group
             root = QgsProject.instance().layerTreeRoot()
-            swatmf_results = root.findGroup("swatmf_results")   
+            apexmf_results = root.findGroup("apexmf_results")   
             QgsProject.instance().addMapLayer(layer, False)
-            swatmf_results.insertChildNode(0, QgsLayerTreeLayer(layer))
+            apexmf_results.insertChildNode(0, QgsLayerTreeLayer(layer))
             msgBox = QMessageBox()
-            msgBox.setWindowIcon(QtGui.QIcon(':/QSWATMOD2/pics/sm_icon.png'))
+            msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
             msgBox.setWindowTitle("Created!")
-            msgBox.setText("'mf_rch_daily.shp' file has been created in 'swatmf_results' group!")
+            msgBox.setText("'mf_rch_daily.shp' file has been created in 'apexmf_results' group!")
             msgBox.exec_()
     '''
-    if self.dlg.checkBox_nitrate.isChecked() and self.dlg.radioButton_mf_rt3d_m.isChecked():
-        filename = "swatmf_out_RT_cno3_monthly"
+    # if comp != "Select" and self.dlg.radioButton_rt3d_m.isChecked():
+    if comp == "nitrate" and self.dlg.radioButton_rt3d_m.isChecked():
+        filename = "amf_RT3D_cNO3_monthly.out"
         # Open "swatmf_out_MF_head" file
         y = ("Monthly") # Remove unnecssary lines
         with open(os.path.join(wd, filename), "r") as f:
@@ -102,10 +219,10 @@ def read_mf_nitrate_dates(self):
         self.dlg.comboBox_rt_results_edate.clear()
         self.dlg.comboBox_rt_results_edate.addItems(dateList)
         self.dlg.comboBox_rt_results_edate.setCurrentIndex(len(dateList)-1)
-        # Copy mf_grid shapefile to swatmf_results tree
-        name = "mf_nitrate_monthly"
-        name_ext = "mf_nitrate_monthly.shp"
-        output_dir = QSWATMOD_path_dict['SMshps']
+        # Copy mf_grid shapefile to apexmf_results tree
+        name = "rt3d_{}_mon".format(comp)
+        name_ext = name + ".shp"
+        output_dir = APEXMOD_path_dict['apexmf_shps']
         # Check if there is an exsting mf_head shapefile
         if not any(lyr.name() == (name) for lyr in list(QgsProject.instance().mapLayers().values())):
             mf_hd_shapfile = os.path.join(output_dir, name_ext)
@@ -115,15 +232,16 @@ def read_mf_nitrate_dates(self):
             layer = QgsVectorLayer(mf_hd_shapfile, '{0}'.format(name), 'ogr')
             # Put in the group
             root = QgsProject.instance().layerTreeRoot()
-            swatmf_results = root.findGroup("swatmf_results")
+            apexmf_results = root.findGroup("apexmf_results")
             QgsProject.instance().addMapLayer(layer, False)
-            swatmf_results.insertChildNode(0, QgsLayerTreeLayer(layer))
+            apexmf_results.insertChildNode(0, QgsLayerTreeLayer(layer))
             msgBox = QMessageBox()
-            msgBox.setWindowIcon(QtGui.QIcon(':/QSWATMOD2/pics/sm_icon.png'))
+            msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
             msgBox.setWindowTitle("Created!")
-            msgBox.setText("'mf_nitrate_monthly.shp' file has been created in 'swatmf_results' group!")
+            msgBox.setText("'{}' layer has been created in 'apexmf_results' group!".format(name))
             msgBox.exec_()
-    elif self.dlg.checkBox_head.isChecked() and self.dlg.radioButton_mf_rt3d_y.isChecked():
+
+    elif self.dlg.radioButton_rt3d_y.isChecked():
         filename = "swatmf_out_RT_cno3_yearly"
         # Open "swatmf_out_MF_head" file
         y = ("Yearly") # Remove unnecssary lines
@@ -138,10 +256,10 @@ def read_mf_nitrate_dates(self):
         self.dlg.comboBox_rt_results_edate.clear()
         self.dlg.comboBox_rt_results_edate.addItems(dateList)
         self.dlg.comboBox_rt_results_edate.setCurrentIndex(len(dateList)-1)
-        # Copy mf_grid shapefile to swatmf_results tree
+        # Copy mf_grid shapefile to apexmf_results tree
         name = "mf_nitrate_yearly"
         name_ext = "mf_nitrate_yearly.shp"
-        output_dir = QSWATMOD_path_dict['SMshps']
+        output_dir = APEXMOD_path_dict['apexmf_shps']
         # Check if there is an exsting mf_head shapefile
         if not any(lyr.name() == (name) for lyr in list(QgsProject.instance().mapLayers().values())):
             mf_hd_shapfile = os.path.join(output_dir, name_ext)
@@ -151,22 +269,23 @@ def read_mf_nitrate_dates(self):
             layer = QgsVectorLayer(mf_hd_shapfile, '{0}'.format(name), 'ogr')
             # Put in the group
             root = QgsProject.instance().layerTreeRoot()
-            swatmf_results = root.findGroup("swatmf_results")   
+            apexmf_results = root.findGroup("apexmf_results")   
             QgsProject.instance().addMapLayer(layer, False)
-            swatmf_results.insertChildNode(0, QgsLayerTreeLayer(layer))
+            apexmf_results.insertChildNode(0, QgsLayerTreeLayer(layer))
             msgBox = QMessageBox()
-            msgBox.setWindowIcon(QtGui.QIcon(':/QSWATMOD2/pics/sm_icon.png'))
+            msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
             msgBox.setWindowTitle("Created!")
-            msgBox.setText("'mf_nitrate_yearly.shp' file has been created in 'swatmf_results' group!")
+            msgBox.setText("'mf_nitrate_yearly.shp' file has been created in 'apexmf_results' group!")
             msgBox.exec_()
     else:
         self.dlg.comboBox_rt_results_sdate.clear()
+        self.dlg.comboBox_rt_results_edate.clear()
 
         
 def export_rt_cno3(self):
-    QSWATMOD_path_dict = self.dirs_and_paths()
-    stdate, eddate, stdate_warmup, eddate_warmup = self.define_sim_period()
-    wd = QSWATMOD_path_dict['SMfolder']
+    APEXMOD_path_dict = self.dirs_and_paths()
+    stdate, eddate = self.define_sim_period()
+    wd = APEXMOD_path_dict['MODFLOW']
     startDate = stdate.strftime("%m-%d-%Y")
     # Open "swatmf_out_MF_head" file
     y = ("Monthly", "Yearly") # Remove unnecssary lines
@@ -180,15 +299,17 @@ def export_rt_cno3(self):
     #     data1 = [x.split() for x in data] # make each line a list
     #     sdate = datetime.datetime.strptime(startDate, "%m-%d-%Y") # Change startDate format
     #     dateList = [(sdate + datetime.timedelta(days = int(i)-1)).strftime("%m-%d-%Y") for i in onlyDate]
-    if self.dlg.radioButton_mf_rt3d_m.isChecked():
-        filename = "swatmf_out_RT_cno3_monthly"
-        self.layer = QgsProject.instance().mapLayersByName("rt_nitrate_monthly")[0]
+    if self.dlg.radioButton_rt3d_m.isChecked() and not self.dlg.mGroupBox_rt_avg.isChecked():
+        comp = self.dlg.comboBox_solutes.currentText().replace('(', '').replace(')', '').strip().split()[1]
+        layerName = "rt3d_{}_mon".format(comp.lower())
+        filename = "amf_RT3D_cNO3_monthly.out"
+        self.layer = QgsProject.instance().mapLayersByName(layerName)[0]
         with open(os.path.join(wd, filename), "r") as f:
             data = [x.strip() for x in f if x.strip() and not x.strip().startswith(y)] # Remove blank lines     
         date = [x.strip().split() for x in data if x.strip().startswith("month:")] # Collect only lines with dates  
         onlyDate = [x[1] for x in date] # Only date
         data1 = [x.split() for x in data] # make each line a list
-        dateList = pd.date_range(startDate, periods = len(onlyDate), freq = 'M').strftime("%b-%Y").tolist()
+        dateList = pd.date_range(startDate, periods = len(onlyDate), freq='M').strftime("%b-%Y").tolist()
     elif self.dlg.radioButton_mf_results_y.isChecked():
         filename = "swatmf_out_MF_head_yearly"
         self.layer = QgsProject.instance().mapLayersByName("rt_nitrate_yearly")[0]
@@ -200,7 +321,7 @@ def export_rt_cno3(self):
         dateList = pd.date_range(startDate, periods = len(onlyDate), freq = 'A').strftime("%Y").tolist()
     else:
         msgBox = QMessageBox()
-        msgBox.setWindowIcon(QtGui.QIcon(':/QSWATMOD2/pics/sm_icon.png'))
+        msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
         msgBox.setWindowTitle("Oops!")
         msgBox.setText("Please, select one of the time options!")
         msgBox.exec_()
@@ -225,7 +346,7 @@ def export_rt_cno3(self):
         #     for num, line in enumerate(data1, 1):
         #         if line[0] == "Day:" in line and line[1] == onlyDate_lookup in line:
         #             ii = num # Starting line
-        if self.dlg.radioButton_mf_rt3d_m.isChecked():
+        if self.dlg.radioButton_rt3d_m.isChecked():
             # Find year 
             dt = datetime.datetime.strptime(selectedDate, "%b-%Y")
             year = dt.year
@@ -238,8 +359,6 @@ def export_rt_cno3(self):
             while not ((data1[count+ii][0] == 'layer:') and (data1[count+ii][1] == layerN)):
                 count += 1
             stline = count+ii+1
-       
-       
         elif self.dlg.radioButton_mf_results_y.isChecked():
             layerN = self.dlg.comboBox_rt_layer.currentText()
             for num, line in enumerate(data1, 1):
@@ -288,7 +407,7 @@ def export_rt_cno3(self):
         self.dlg.raise_()
 
     msgBox = QMessageBox()
-    msgBox.setWindowIcon(QtGui.QIcon(':/QSWATMOD2/pics/sm_icon.png'))
+    msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
     msgBox.setWindowTitle("Exported!")
     msgBox.setText("rt_nitrate results were exported successfully!")
     msgBox.exec_()
@@ -296,25 +415,25 @@ def export_rt_cno3(self):
 
 def get_rt_cno3_avg_m_df(self):
     msgBox = QMessageBox()
-    msgBox.setWindowIcon(QtGui.QIcon(':/QSWATMOD2/pics/sm_icon.png'))
+    msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
     msgBox.setWindowTitle("Reading ...")
-    msgBox.setText("We are going to read the 'swatmf_out_RT_cno3_monthly' file ...")
+    msgBox.setText("We are going to read the 'amf_RT3D_cNO3_monthly.out' file ...")
     msgBox.exec_()
 
-    QSWATMOD_path_dict = self.dirs_and_paths()
-    stdate, eddate, stdate_warmup, eddate_warmup = self.define_sim_period()
-    wd = QSWATMOD_path_dict['SMfolder']
+    APEXMOD_path_dict = self.dirs_and_paths()
+    stdate, eddate = self.define_sim_period()
+    wd = APEXMOD_path_dict['MODFLOW']
     startDate = stdate.strftime("%m-%d-%Y")
     # Open "swatmf_out_MF_head" file
     y = ("Monthly", "Yearly") # Remove unnecssary lines
-    filename = "swatmf_out_RT_cno3_monthly"
-    self.layer = QgsProject.instance().mapLayersByName("mf_nitrate_monthly")[0]
+    filename = "amf_RT3D_cNO3_monthly.out"
+    # self.layer = QgsProject.instance().mapLayersByName("rt3d_nitrate_avg_mon")[0]
     with open(os.path.join(wd, filename), "r") as f:
         data = [x.strip() for x in f if x.strip() and not x.strip().startswith(y)] # Remove blank lines     
     date = [x.strip().split() for x in data if x.strip().startswith("month:")] # Collect only lines with dates  
     onlyDate = [x[1] for x in date] # Only date
     data1 = [x.split() for x in data] # make each line a list
-    dateList = pd.date_range(startDate, periods=len(onlyDate), freq ='M').strftime("%b-%Y").tolist()
+    dateList = pd.date_range(startDate, periods=len(onlyDate), freq='M').strftime("%b-%Y").tolist()
 
     selectedSdate = self.dlg.comboBox_rt_results_sdate.currentText()
     selectedEdate = self.dlg.comboBox_rt_results_edate.currentText()
@@ -360,25 +479,22 @@ def get_rt_cno3_avg_m_df(self):
 
     big_df = big_df.T
     big_df.index = pd.to_datetime(big_df.index)
-    mbig_df = big_df.groupby(big_df.index.month).mean()
+    self.mbig_df = big_df.groupby(big_df.index.month).mean()
 
-    msgBox = QMessageBox()
-    msgBox.setWindowIcon(QtGui.QIcon(':/QSWATMOD2/pics/sm_icon.png'))
-    msgBox.setWindowTitle("Select!")
-    msgBox.setText("Please, select months then click EXPORT")
-    msgBox.exec_()
-
-
-    return mbig_df
+    # msgBox = QMessageBox()
+    # msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
+    # msgBox.setWindowTitle("Select!")
+    # msgBox.setText("Please, select months then click EXPORT")
+    # msgBox.exec_()
 
 def create_rt_avg_mon_shp(self):
     input1 = QgsProject.instance().mapLayersByName("mf_grid (MODFLOW)")[0]
-    QSWATMOD_path_dict = self.dirs_and_paths()
+    APEXMOD_path_dict = self.dirs_and_paths()
 
-    # Copy mf_grid shapefile to swatmf_results tree
-    name = "rt_nitrate_avg_mon"
-    name_ext = "rt_nitrate_avg_mon.shp"
-    output_dir = QSWATMOD_path_dict['SMshps']
+    # Copy mf_grid shapefile to apexmf_results tree
+    name = "rt3d_nitrate_avg_mon"
+    name_ext = "rt3d_nitrate_avg_mon.shp"
+    output_dir = APEXMOD_path_dict['MODFLOW']
     # Check if there is an exsting mf_head shapefile
     if not any(lyr.name() == (name) for lyr in list(QgsProject.instance().mapLayers().values())):
         rt_no3_shp = os.path.join(output_dir, name_ext)
@@ -388,13 +504,13 @@ def create_rt_avg_mon_shp(self):
         layer = QgsVectorLayer(rt_no3_shp, '{0}'.format(name), 'ogr')
         # Put in the group
         root = QgsProject.instance().layerTreeRoot()
-        swatmf_results = root.findGroup("swatmf_results")
+        apexmf_results = root.findGroup("apexmf_results")
         QgsProject.instance().addMapLayer(layer, False)
-        swatmf_results.insertChildNode(0, QgsLayerTreeLayer(layer))
+        apexmf_results.insertChildNode(0, QgsLayerTreeLayer(layer))
         msgBox = QMessageBox()
-        msgBox.setWindowIcon(QtGui.QIcon(':/QSWATMOD2/pics/sm_icon.png'))
+        msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
         msgBox.setWindowTitle("Created!")
-        msgBox.setText("'rt_nitrate_avg_mon.shp' file has been created in 'swatmf_results' group!")
+        msgBox.setText("'rt3d_nitrate_avg_mon.shp' file has been created in 'apexmf_results' group!")
         msgBox.exec_()
         msgBox = QMessageBox()
 
@@ -428,9 +544,10 @@ def selected_rt_mon(self):
 
 
 def export_rt_cno3_avg_m(self):
-    mbig_df = get_rt_cno3_avg_m_df(self)
+    # comp = self.dlg.comboBox_solutes.currentText().replace('(', '').replace(')', '').strip().split()[1].lower()
+    mbig_df = self.mbig_df
     selected_months = selected_rt_mon(self)
-    self.layer = QgsProject.instance().mapLayersByName("rt_nitrate_avg_mon")[0]
+    self.layer = QgsProject.instance().mapLayersByName("rt3d_nitrate_avg_mon")[0]
     per = 0
     self.dlg.progressBar_mf_results.setValue(0)
     for m in selected_months:
@@ -468,26 +585,23 @@ def export_rt_cno3_avg_m(self):
         self.dlg.raise_()
 
     msgBox = QMessageBox()
-    msgBox.setWindowIcon(QtGui.QIcon(':/QSWATMOD2/pics/sm_icon.png'))
+    msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
     msgBox.setWindowTitle("Exported!")
     msgBox.setText("rt_nitrate_m results were exported successfully!")
     msgBox.exec_()
 
 
 def read_vector_maps(self):
+    comp_dic, comps = comps_dic()
     layers = [lyr.name() for lyr in list(QgsProject.instance().mapLayers().values())]
     available_layers = [
-                'mf_hd_monthly',
-                'mf_hd_yearly',
-                'mf_rch_monthly',
-                'mf_rch_yearly',
-                'rt_nitrate_avg_mon',
-                'rt_nitrate_monthly',
-                'rt_nitrate_yearly',
-                'rt_phosphorus_avg_mon',
-                'rt_phosphorus_monthly',
-                'rt_phosphorus_yearly',
+                'mf_head_mon',
+                'mf_head_yr',
+                'mf_recharge_mon',
+                'mf_recharge_yr',
                 ]
+    available_layers = available_layers + comps
+
     self.dlg.comboBox_vector_lyrs.clear()
     self.dlg.comboBox_vector_lyrs.addItems(available_layers)
     for i in range(len(available_layers)):
@@ -502,12 +616,12 @@ def read_vector_maps(self):
 
 
 def cvt_vtr(self):
-    QSWATMOD_path_dict = self.dirs_and_paths()
+    APEXMOD_path_dict = self.dirs_and_paths()
     selectedVector = self.dlg.comboBox_vector_lyrs.currentText()
     layer = QgsProject.instance().mapLayersByName(str(selectedVector))[0]
 
     # Find .dis file and read number of rows, cols, x spacing, and y spacing (not allowed to change)
-    for filename in glob.glob(str(QSWATMOD_path_dict['SMfolder'])+"/*.dis"):
+    for filename in glob.glob(str(APEXMOD_path_dict['MODFLOW'])+"/*.dis"):
         with open(filename, "r") as f:
             data = []
             for line in f.readlines():
@@ -541,37 +655,31 @@ def cvt_vtr(self):
                 )
                     ]
 
-    # Create swatmf_results tree inside 
+    # Create apexmf_results tree inside 
     root = QgsProject.instance().layerTreeRoot()
-    if root.findGroup("swatmf_results"):
-        swatmf_results = root.findGroup("swatmf_results")
+    if root.findGroup("apexmf_results"):
+        apexmf_results = root.findGroup("apexmf_results")
     else:
-        swatmf_results = root.insertGroup(0, "swatmf_results")
+        apexmf_results = root.insertGroup(0, "apexmf_results")
     
     if root.findGroup(selectedVector):
         rastergroup = root.findGroup(selectedVector)
     else:
-        rastergroup = swatmf_results.insertGroup(0, selectedVector)
-
-
+        rastergroup = apexmf_results.insertGroup(0, selectedVector)
     per = 0
     self.dlg.progressBar_cvt_vtr.setValue(0)
-
     for fdnam in fdnames:
         QCoreApplication.processEvents()
         nodata = float(self.dlg.lineEdit_nodata.text())
         mincolor = self.dlg.mColorButton_min_rmap.color().name()
         maxcolor = self.dlg.mColorButton_max_rmap.color().name()
-
         name = fdnam
         name_ext = "{}.tif".format(name)
-        output_dir = QSWATMOD_path_dict['SMshps']
-        
+        output_dir = APEXMOD_path_dict['apexmf_shps']
         # create folder for each layer output
         rasterpath = os.path.join(output_dir, selectedVector)
         if not os.path.exists(rasterpath):
             os.makedirs(rasterpath)
-
         output_raster = os.path.join(rasterpath, name_ext)
         params = {
             'INPUT': layer,
@@ -588,20 +696,21 @@ def cvt_vtr(self):
         rasterlayer = QgsRasterLayer(output_raster, '{0} ({1})'.format(fdnam, selectedVector))
         QgsProject.instance().addMapLayer(rasterlayer, False)
         rastergroup.insertChildNode(0, QgsLayerTreeLayer(rasterlayer))
-        stats = rasterlayer.dataProvider().bandStatistics(1, QgsRasterBandStats.All)
+        stats = rasterlayer.dataProvider().bandStatistics(1, QgsRasterBandStats.All, ext, 0)
         rmin = stats.minimumValue
         rmax = stats.maximumValue
         fnc = QgsColorRampShader()
         lst = [QgsColorRampShader.ColorRampItem(rmin, QColor(mincolor)), QgsColorRampShader.ColorRampItem(rmax, QColor(maxcolor))]
         fnc.setColorRampItemList(lst)
         fnc.setColorRampType(QgsColorRampShader.Interpolated)
+        fnc.setClassificationMode(QgsColorRampShader.Quantile)
+        fnc.classifyColorRamp()
 
         shader = QgsRasterShader()
         shader.setRasterShaderFunction(fnc)
         renderer = QgsSingleBandPseudoColorRenderer(rasterlayer.dataProvider(), 1, shader)
         rasterlayer.setRenderer(renderer)
         rasterlayer.triggerRepaint()
-
         # create image
         img = QImage(QSize(800, 800), QImage.Format_ARGB32_Premultiplied)
         # set background color
@@ -612,6 +721,7 @@ def cvt_vtr(self):
         p = QPainter()
         p.begin(img)
         p.setRenderHint(QPainter.Antialiasing)
+
         # create map settings
         ms = QgsMapSettings()
         ms.setBackgroundColor(bcolor)
@@ -632,10 +742,24 @@ def cvt_vtr(self):
         render = QgsMapRendererCustomPainterJob(ms, p)
         render.start()
         render.waitForFinished()
+        
+        # get timestamp
+        p.drawImage(QPoint(), img)
+        pen = QPen(Qt.red)
+        pen.setWidth(2)
+        p.setPen(pen)
+
+        font = QFont()
+        font.setFamily('Times')
+        # font.setBold(True)
+        font.setPointSize(18)
+        p.setFont(font)
+        # p.setBackground(QColor('sea green')) doesn't work    
+        p.drawText(QRect(0, 0, 800, 800), Qt.AlignRight | Qt.AlignBottom, fdnam)
         p.end()
 
         # save the image
-        img.save(os.path.join(rasterpath, '{:03d}_{}.png'.format(per, fdnam)))
+        img.save(os.path.join(rasterpath, '{:03d}_{}.jpg'.format(per, fdnam)))
         
         # Update progress bar         
         per += 1
@@ -644,30 +768,25 @@ def cvt_vtr(self):
         QCoreApplication.processEvents()
         self.dlg.raise_()
 
-
-
     duration = self.dlg.doubleSpinBox_ani_r_time.value()
 
     # filepaths
-    fp_in = os.path.join(rasterpath, '*.png')
+    fp_in = os.path.join(rasterpath, '*.jpg')
     fp_out = os.path.join(rasterpath, '{}.gif'.format(selectedVector))
 
     # https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#gif
     fimg, *fimgs = [Image.open(f) for f in sorted(glob.glob(fp_in))]
     fimg.save(fp=fp_out, format='GIF', append_images=fimgs,
             save_all=True, duration=duration*1000, loop=0, transparency=0)
-
-
-
     
     msgBox = QMessageBox()
-    msgBox.setWindowIcon(QtGui.QIcon(':/QSWATMOD2/pics/sm_icon.png'))
+    msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
     msgBox.setWindowTitle("Coverted!")
     msgBox.setText("Fields from {} were converted successfully!".format(selectedVector))
     msgBox.exec_()
 
     questionBox = QMessageBox()
-    questionBox.setWindowIcon(QtGui.QIcon(':/QSWATMOD2/pics/sm_icon.png'))
+    questionBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
     reply = QMessageBox.question(
                     questionBox, 'Open?', 
                     'Do you want to open the animated gif file?', QMessageBox.Yes, QMessageBox.No)

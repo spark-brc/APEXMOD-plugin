@@ -71,6 +71,8 @@ from .pyfolder import post_iii_rch
 from .pyfolder import post_iv_gwsw
 from .pyfolder import post_v_wb
 from .pyfolder import post_vi_head
+from .pyfolder import post_vii_nitrate
+from .pyfolder import post_viii_salt
 from .pyfolder import cvt_plotsToVideo
 from .pyfolder import retrieve_ProjHistory
 from .pyfolder import config_sets
@@ -363,13 +365,32 @@ class APEXMOD(object):
 
         # ---------------------------------------------------------------------------------------------
         self.dlg.tabWidget.currentChanged.connect(self.check_outputs)
+        self.dlg.tabWidget.currentChanged.connect(self.check_outputs_rt3d)
         self.dlg.tabWidget.currentChanged.connect(self.define_sim_period)
+        # ---------------------------------------------------------------------------------------------
+        # 5th tab for RT3D results --------------------------------------------------------------------
+        ## Export mf_nitrate to shapefile
+        self.dlg.radioButton_rt3d_d.toggled.connect(self.import_rt3d_salt_dates)
+        self.dlg.radioButton_rt3d_m.toggled.connect(self.import_rt3d_salt_dates)
+        self.dlg.radioButton_rt3d_m.toggled.connect(self.create_rt3d_salt_shps)
+        self.dlg.radioButton_rt3d_y.toggled.connect(self.import_rt3d_salt_dates)
+        
+        self.dlg.comboBox_solutes.currentIndexChanged.connect(self.import_rt3d_salt_dates)
+        self.dlg.comboBox_solutes.currentIndexChanged.connect(self.create_rt3d_salt_shps)
+        
+        # self.dlg.checkBox_nitrate.toggled.connect(self.import_mf_dates)
+        self.dlg.groupBox_export_solutes.toggled.connect(self.get_compNames)
+        self.dlg.pushButton_export_rt_results.clicked.connect(self.export_solute_results)
+        self.dlg.mGroupBox_rt_avg.toggled.connect(self.create_avg_m_shps)
+        self.dlg.mGroupBox_cvt_vtr.toggled.connect(self.read_vector_maps)
+        self.dlg.pushButton_cvt_vtr.clicked.connect(self.cvt_vtr)
+        
         # ---------------------------------------------------------------------------------------------
         # Run
         self.dlg.pushButton_run_apexmf_model.clicked.connect(self.run_apexmf_model)
 
         # Set tab enable
-        for i in range(1, 5):
+        for i in range(1, 6):
             self.dlg.tabWidget.setTabEnabled(i, False)
 
         # show the dialog
@@ -490,6 +511,14 @@ class APEXMOD(object):
             post_iii_rch.export_mf_recharge(self)
         elif self.dlg.checkBox_head.isChecked():
             post_vi_head.export_mf_head(self)
+        # elif (
+        #         self.dlg.comboBox_solutes.currentText() == 'NO3 (Nitrate)' and 
+        #         not self.dlg.mGroupBox_rt_avg.isChecked()):
+        #     post_vii_nitrate.export_rt_cno3(self)
+        # elif (
+        #         self.dlg.comboBox_solutes.currentText() == 'NO3 (Nitrate)' and 
+        #         self.dlg.mGroupBox_rt_avg.isChecked()):
+        #     self.export_rt_cno3_avg_m()
 
     def import_mf_dates(self):
         if self.dlg.checkBox_recharge.isChecked():
@@ -499,6 +528,10 @@ class APEXMOD(object):
             post_vi_head.read_mf_nOflayers(self)
             self.dlg.radioButton_mf_results_d.setEnabled(False)
             post_vi_head.read_mf_head_dates(self)
+        elif self.dlg.comboBox_solutes.currentText() == 'NO3 (Nitrate)':
+            post_vii_nitrate.read_mf_nOflayers(self)
+            post_vii_nitrate.read_mf_nitrate_dates(self)
+
 
     def import_mf_gwsw_dates(self):
         post_iv_gwsw.read_mf_gwsw_dates(self)
@@ -1180,6 +1213,7 @@ class APEXMOD(object):
         exported_files = os.path.normpath(Projectfolder + "/" + Project_Name + "/" + "exported_files")
         scn_folder = os.path.normpath(Projectfolder + "/" + Project_Name + "/" + "Scenarios")
         mf_model = os.path.normpath(Projectfolder + "/" + Project_Name + "/" + "APEX-MODFLOW/MODFLOW")
+        salt_foler = os.path.normpath(Projectfolder + "/" + Project_Name + "/" + "APEX-MODFLOW/SALINITY")
 
         APEXMOD_path_dict = {
                                 'org_shps': org_shps,
@@ -1189,7 +1223,8 @@ class APEXMOD(object):
                                 'apexmf_exes': apexmf_exes,
                                 'exported_files': exported_files,
                                 'Scenarios': scn_folder,
-                                'MODFLOW': mf_model
+                                'MODFLOW': mf_model,
+                                'SALINITY': salt_foler
                                 }
         return APEXMOD_path_dict
 
@@ -1428,9 +1463,15 @@ class APEXMOD(object):
         else:
             self.dlg.tabWidget.setTabEnabled(3, False)
 
+    def check_outputs_rt3d(self):
+        self.dirs_and_paths()
+        output_dir = APEXMOD_path_dict['MODFLOW']
+        output_files = ["apexmf_link.txt", "amf_RT3D_cNO3_monthly.out"]
+        if all(os.path.isfile(os.path.join(output_dir, x)) for x in output_files):
+            self.dlg.tabWidget.setTabEnabled(4, True)
+        else:
+            self.dlg.tabWidget.setTabEnabled(4, False)
 
-
-    
 
     # figured it out by trials and errors -------------------------------
     # def loadDEM_main(self):
@@ -1562,3 +1603,136 @@ class APEXMOD(object):
         model.select()
         model.setHeaderData(1, QtCore.Qt.Horizontal, "what")
         self.dlg.tableView_test.setModel(model)
+
+
+# NOTE: Tab5 --- RT related functions tab5
+    # Let's combine rt3d / salt here
+
+    def import_rt3d_salt_dates(self):
+        comp = self.dlg.comboBox_solutes.currentText().replace('(', '').replace(')', '').strip().split()[1].lower()
+        if (
+            comp != "solute" and
+            self.dlg.radioButton_rt3d_m.isChecked() and
+            comp != "nitrate" and
+            comp != "phosphorus"
+            ):
+            post_viii_salt.read_salt_dates(self)
+        if (
+            (comp == "nitrate" or comp == "phosphorus") and
+            self.dlg.radioButton_rt3d_m.isChecked()
+            ):
+            post_vii_nitrate.read_rt3d_dates(self)
+            post_vii_nitrate.read_mf_nOflayers(self)
+
+    def create_rt3d_salt_shps(self):
+        comp = self.dlg.comboBox_solutes.currentText().replace('(', '').replace(')', '').strip().split()[1].lower()
+        if (
+            comp != "solute" and
+            self.dlg.radioButton_rt3d_m.isChecked() and
+            comp != "nitrate" and
+            comp != "phosphorus"
+            ):
+            post_viii_salt.create_salt_grid_shps(self) 
+        if (
+            comp != "solute" and
+            self.dlg.radioButton_rt3d_m.isChecked() and
+            comp == "nitrate" or
+            comp == "phosphorus"
+            ):
+            post_vii_nitrate.create_rt3d_shps(self)
+
+        # if (
+        #     self.dlg.groupBox_export_solutes.isChecked() and
+        #     self.dlg.radioButton_rt3d_m.isChecked() and
+        #     not comp == 'solute'):
+        #     post_vii_nitrate.read_mf_nOflayers(self)
+        #     post_vii_nitrate.read_mf_nitrate_dates(self)
+            
+
+
+    def get_compNames(self):
+        post_vii_nitrate.get_compNames(self)
+
+    def create_avg_m_shps(self):
+        comp = self.dlg.comboBox_solutes.currentText().replace('(', '').replace(')', '').strip().split()[1].lower()
+        if (
+            (comp == 'nitrate' or
+            comp == 'phosphorus') and
+            self.dlg.mGroupBox_rt_avg.isChecked()):
+            post_vii_nitrate.create_rt_avg_mon_shp(self)
+        if (
+            (comp == 'sulfate' or
+            comp == 'calcium' or
+            comp == 'magnesium' or
+            comp == 'sodium' or
+            comp == 'potassium' or
+            comp == 'chloride' or
+            comp == 'carbonate' or
+            comp == 'bicarbonate') and
+            (self.dlg.mGroupBox_rt_avg.isChecked())
+            ):
+            post_viii_salt.create_salt_avg_mon_shp(self)
+    
+    def export_rt_cno3_avg_m(self):
+        post_vii_nitrate.get_rt_cno3_avg_m_df(self)
+        post_vii_nitrate.export_rt_cno3_avg_m(self)
+
+    def read_vector_maps(self):
+        post_vii_nitrate.read_vector_maps(self)
+
+    def cvt_vtr(self):
+        post_vii_nitrate.cvt_vtr(self)
+    
+    def create_salt_grid_shapefile(self):
+        if self.dlg.radioButton_rt3d_m.isChecked():
+            post_viii_salt.read_salt_dates(self)
+            post_viii_salt.create_salt_grid_shapefile(self)
+
+    def export_solute_results(self):
+        comp = self.dlg.comboBox_solutes.currentText().replace('(', '').replace(')', '').strip().split()[1].lower()
+        if (
+            (comp == 'nitrate' or
+            comp == 'phosphorus') and
+            not self.dlg.mGroupBox_rt_avg.isChecked()
+            ):
+            post_vii_nitrate.export_rt_cno3(self)
+        if (
+            (comp == 'nitrate' or
+            comp == 'phosphorus') and
+            self.dlg.mGroupBox_rt_avg.isChecked()
+            ):
+            post_vii_nitrate.get_rt_cno3_avg_m_df(self)
+            post_vii_nitrate.export_rt_cno3_avg_m(self)
+
+        if (
+            (comp == 'sulfate' or
+            comp == 'calcium' or
+            comp == 'magnesium' or
+            comp == 'sodium' or
+            comp == 'potassium' or
+            comp == 'chloride' or
+            comp == 'carbonate' or
+            comp == 'bicarbonate') and
+            not self.dlg.mGroupBox_rt_avg.isChecked()
+            ):
+            post_viii_salt.salt_export_result(self)
+        if (
+            (comp == 'sulfate' or
+            comp == 'calcium' or
+            comp == 'magnesium' or
+            comp == 'sodium' or
+            comp == 'potassium' or
+            comp == 'chloride' or
+            comp == 'carbonate' or
+            comp == 'bicarbonate') and
+            (self.dlg.mGroupBox_rt_avg.isChecked())
+            ):
+            post_viii_salt.get_salt_avg_m_df(self)
+            post_viii_salt.export_salt_avg_m(self)
+        # elif (
+        #         self.dlg.comboBox_solutes.currentText() == 'NO3 (Nitrate)' and 
+        #         self.dlg.mGroupBox_rt_avg.isChecked()):
+        #     self.export_rt_cno3_avg_m()
+
+
+# ---

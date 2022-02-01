@@ -183,7 +183,7 @@ def export_mf_head(self):
         date = [x.strip().split() for x in data if x.strip().startswith("month:")] # Collect only lines with dates  
         onlyDate = [x[1] for x in date] # Only date
         data1 = [x.split() for x in data] # make each line a list
-        dateList = pd.date_range(startDate, periods = len(onlyDate), freq = 'M').strftime("%b-%Y").tolist()
+        dateList = pd.date_range(startDate, periods = len(onlyDate), freq='M').strftime("%b-%Y").tolist()
     elif self.dlg.radioButton_mf_results_y.isChecked():
         filename = "amf_MF_head_yearly.out"
         self.layer = QgsProject.instance().mapLayersByName("mf_hd_yearly")[0]

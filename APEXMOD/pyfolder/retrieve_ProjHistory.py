@@ -13,6 +13,7 @@ def retrieve_ProjHistory(self):
     org_shps = APEXMOD_path_dict['org_shps']
     apexmf_shps = APEXMOD_path_dict['apexmf_shps']
     mf_folder = APEXMOD_path_dict['MODFLOW']
+    salt_folder = APEXMOD_path_dict['SALINITY']
     # retrieve TxtInOut
     if os.path.isfile(os.path.join(apexmf_model, "APEXCONT.DAT")):
         # stdate, eddate = self.define_sim_period()
@@ -84,6 +85,21 @@ def retrieve_ProjHistory(self):
         self.dlg.tabWidget.setTabEnabled(3, True)
     else:
         self.dlg.tabWidget.setTabEnabled(3, False)
+
+    # rt3d moduel
+    rt3d_files = ['rt3d_filenames', 'amf_RT3D_cNO3_monthly.out']
+    if all(os.path.isfile(os.path.join(mf_folder, x)) for x in rt3d_files):
+        self.dlg.tabWidget.setTabEnabled(4, True)
+    else:
+        self.dlg.tabWidget.setTabEnabled(4, False)
+
+
+    # # salt moduel
+    # salt_files = ['salt_input', 'salt.output.outlet']
+    # if all(os.path.isfile(os.path.join(salt_folder, x)) for x in salt_files):
+    #     self.dlg.tabWidget.setTabEnabled(5, True)
+    # else:
+    #     self.dlg.tabWidget.setTabEnabled(5, False)
 
         
 def wt_act(self):
