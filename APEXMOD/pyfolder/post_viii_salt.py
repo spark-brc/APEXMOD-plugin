@@ -85,7 +85,6 @@ def create_salt_grid_shps(self):
             msgBox.exec_()
 
 def create_salt_avg_mon_shp(self):
-
     input1 = QgsProject.instance().mapLayersByName("mf_grid (MODFLOW)")[0]
     APEXMOD_path_dict = self.dirs_and_paths()
     comp = self.dlg.comboBox_solutes.currentText().replace('(', '').replace(')', '').strip().split()[1].lower()

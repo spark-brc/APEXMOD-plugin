@@ -1156,7 +1156,6 @@ def export_sd_mTa(self):
             msgBox.setWindowTitle("Exported!")
             msgBox.setText("'apexmf_reach(" + str(outletSubNum)+")_annual.txt' file is exported to your 'exported_files' folder!")
             msgBox.exec_()
-
         except:
             msgBox = QMessageBox()
             msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))

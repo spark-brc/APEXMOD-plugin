@@ -73,6 +73,7 @@ from .pyfolder import post_v_wb
 from .pyfolder import post_vi_head
 from .pyfolder import post_vii_nitrate
 from .pyfolder import post_viii_salt
+from .pyfolder import post_ix_solute_hyd
 from .pyfolder import cvt_plotsToVideo
 from .pyfolder import retrieve_ProjHistory
 from .pyfolder import config_sets
@@ -370,6 +371,8 @@ class APEXMOD(object):
         # ---------------------------------------------------------------------------------------------
         # 5th tab for RT3D results --------------------------------------------------------------------
         ## Export mf_nitrate to shapefile
+        self.dlg.horizontalSlider_solute_start_year.valueChanged.connect(self.solute_year_label)
+        
         self.dlg.radioButton_rt3d_d.toggled.connect(self.import_rt3d_salt_dates)
         self.dlg.radioButton_rt3d_m.toggled.connect(self.import_rt3d_salt_dates)
         self.dlg.radioButton_rt3d_m.toggled.connect(self.create_rt3d_salt_shps)
@@ -377,8 +380,10 @@ class APEXMOD(object):
         
         self.dlg.comboBox_solutes.currentIndexChanged.connect(self.import_rt3d_salt_dates)
         self.dlg.comboBox_solutes.currentIndexChanged.connect(self.create_rt3d_salt_shps)
-        
+
         # self.dlg.checkBox_nitrate.toggled.connect(self.import_mf_dates)
+        self.dlg.pushButton_solute_plot_show.clicked.connect(self.solute_plot)
+        self.dlg.pushButton_solute_df_export.clicked.connect(self.export_solute_df)
         self.dlg.groupBox_export_solutes.toggled.connect(self.get_compNames)
         self.dlg.pushButton_export_rt_results.clicked.connect(self.export_solute_results)
         self.dlg.mGroupBox_rt_avg.toggled.connect(self.create_avg_m_shps)
@@ -1469,6 +1474,8 @@ class APEXMOD(object):
         output_files = ["apexmf_link.txt", "amf_RT3D_cNO3_monthly.out"]
         if all(os.path.isfile(os.path.join(output_dir, x)) for x in output_files):
             self.dlg.tabWidget.setTabEnabled(4, True)
+            post_ix_solute_hyd.read_sub_no(self)
+            post_ix_solute_hyd.get_compNames(self)
         else:
             self.dlg.tabWidget.setTabEnabled(4, False)
 
@@ -1607,6 +1614,15 @@ class APEXMOD(object):
 
 # NOTE: Tab5 --- RT related functions tab5
     # Let's combine rt3d / salt here
+    def solute_year_label(self):
+        current_year = self.dlg.horizontalSlider_solute_start_year.value()
+        self.dlg.label_solute_year.setText(str(current_year))
+
+    def solute_plot(self):
+        post_ix_solute_hyd.solute_plot(self)
+
+    def export_solute_df(self):
+        post_ix_solute_hyd.export_solute_df(self)
 
     def import_rt3d_salt_dates(self):
         comp = self.dlg.comboBox_solutes.currentText().replace('(', '').replace(')', '').strip().split()[1].lower()

@@ -115,7 +115,7 @@ def create_river_grid_filter(self):
 def delete_river_grid_with_threshold(self):
     self.layer = QgsProject.instance().mapLayersByName("river_grid (APEX-MODFLOW)")[0]
     provider = self.layer.dataProvider()
-    request =  QgsFeatureRequest().setFilterExpression('"rgrid_len" < 0.5')
+    request = QgsFeatureRequest().setFilterExpression('"rgrid_len" < 0.5')
     request.setSubsetOfAttributes([])
     request.setFlags(QgsFeatureRequest.NoGeometry)
     self.layer.startEditing()
