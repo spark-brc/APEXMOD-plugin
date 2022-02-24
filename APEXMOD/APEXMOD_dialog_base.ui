@@ -57,7 +57,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>4</number>
+      <number>1</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideNone</enum>
@@ -466,7 +466,7 @@ p, li { white-space: pre-wrap; }
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-90</y>
+            <y>0</y>
             <width>606</width>
             <height>511</height>
            </rect>
@@ -6884,6 +6884,73 @@ APEX-MODFLOW Simulation</string>
                    <layout class="QHBoxLayout" name="horizontalLayout_71">
                     <item>
                      <widget class="QSlider" name="horizontalSlider_solute_start_year">
+                      <property name="palette">
+                       <palette>
+                        <active>
+                         <colorrole role="Button">
+                          <brush brushstyle="SolidPattern">
+                           <color alpha="255">
+                            <red>0</red>
+                            <green>120</green>
+                            <blue>215</blue>
+                           </color>
+                          </brush>
+                         </colorrole>
+                         <colorrole role="Highlight">
+                          <brush brushstyle="SolidPattern">
+                           <color alpha="255">
+                            <red>240</red>
+                            <green>240</green>
+                            <blue>240</blue>
+                           </color>
+                          </brush>
+                         </colorrole>
+                        </active>
+                        <inactive>
+                         <colorrole role="Button">
+                          <brush brushstyle="SolidPattern">
+                           <color alpha="255">
+                            <red>240</red>
+                            <green>240</green>
+                            <blue>240</blue>
+                           </color>
+                          </brush>
+                         </colorrole>
+                         <colorrole role="Highlight">
+                          <brush brushstyle="SolidPattern">
+                           <color alpha="255">
+                            <red>240</red>
+                            <green>240</green>
+                            <blue>240</blue>
+                           </color>
+                          </brush>
+                         </colorrole>
+                        </inactive>
+                        <disabled>
+                         <colorrole role="Button">
+                          <brush brushstyle="SolidPattern">
+                           <color alpha="255">
+                            <red>240</red>
+                            <green>240</green>
+                            <blue>240</blue>
+                           </color>
+                          </brush>
+                         </colorrole>
+                         <colorrole role="Highlight">
+                          <brush brushstyle="SolidPattern">
+                           <color alpha="255">
+                            <red>240</red>
+                            <green>240</green>
+                            <blue>240</blue>
+                           </color>
+                          </brush>
+                         </colorrole>
+                        </disabled>
+                       </palette>
+                      </property>
+                      <property name="mouseTracking">
+                       <bool>true</bool>
+                      </property>
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -6892,7 +6959,7 @@ APEX-MODFLOW Simulation</string>
                     <item>
                      <widget class="QLabel" name="label_solute_year">
                       <property name="text">
-                       <string>TextLabel</string>
+                       <string>Warm-up</string>
                       </property>
                      </widget>
                     </item>
@@ -7642,21 +7709,311 @@ APEX-MODFLOW Simulation</string>
                 </item>
                </layout>
               </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_salt_channel">
+             <property name="font">
+              <font>
+               <weight>50</weight>
+               <bold>false</bold>
+               <kerning>true</kerning>
+              </font>
+             </property>
+             <property name="title">
+              <string>Salt Ion in Channel</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_73">
               <item>
-               <spacer name="verticalSpacer_3">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
+               <layout class="QHBoxLayout" name="horizontalLayout_72">
+                <property name="topMargin">
+                 <number>0</number>
                 </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
+                <item>
+                 <widget class="QFrame" name="frame_23">
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_67">
+                   <property name="spacing">
+                    <number>3</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>3</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>3</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>3</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>3</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_81">
+                     <property name="text">
+                      <string>Time</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="comboBox_salt_time"/>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QFrame" name="frame_24">
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_68">
+                   <property name="spacing">
+                    <number>3</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>3</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>3</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>3</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>3</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_82">
+                     <property name="text">
+                      <string>Subarea No.</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="comboBox_salt_sub"/>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_72">
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QRadioButton" name="radioButton_salt_mass">
+                    <property name="text">
+                     <string>MASS (kg)</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                    <attribute name="buttonGroup">
+                     <string notr="true">buttonGroup_salt_ions</string>
+                    </attribute>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="radioButton_salt_conc">
+                    <property name="text">
+                     <string>CONC (mg/L)</string>
+                    </property>
+                    <property name="checked">
+                     <bool>false</bool>
+                    </property>
+                    <attribute name="buttonGroup">
+                     <string notr="true">buttonGroup_salt_ions</string>
+                    </attribute>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="QFrame" name="frame_25">
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_69">
+                   <property name="spacing">
+                    <number>3</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>3</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>3</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>3</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>3</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_86">
+                     <property name="text">
+                      <string>Variable</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="comboBox_salt_vars"/>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_70">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_74">
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QSlider" name="horizontalSlider_salt_start_year">
+                      <property name="palette">
+                       <palette>
+                        <active>
+                         <colorrole role="Button">
+                          <brush brushstyle="SolidPattern">
+                           <color alpha="255">
+                            <red>0</red>
+                            <green>122</green>
+                            <blue>217</blue>
+                           </color>
+                          </brush>
+                         </colorrole>
+                         <colorrole role="Highlight">
+                          <brush brushstyle="SolidPattern">
+                           <color alpha="255">
+                            <red>240</red>
+                            <green>240</green>
+                            <blue>240</blue>
+                           </color>
+                          </brush>
+                         </colorrole>
+                        </active>
+                        <inactive>
+                         <colorrole role="Button">
+                          <brush brushstyle="SolidPattern">
+                           <color alpha="255">
+                            <red>240</red>
+                            <green>240</green>
+                            <blue>240</blue>
+                           </color>
+                          </brush>
+                         </colorrole>
+                         <colorrole role="Highlight">
+                          <brush brushstyle="SolidPattern">
+                           <color alpha="255">
+                            <red>240</red>
+                            <green>240</green>
+                            <blue>240</blue>
+                           </color>
+                          </brush>
+                         </colorrole>
+                        </inactive>
+                        <disabled>
+                         <colorrole role="Button">
+                          <brush brushstyle="SolidPattern">
+                           <color alpha="255">
+                            <red>240</red>
+                            <green>240</green>
+                            <blue>240</blue>
+                           </color>
+                          </brush>
+                         </colorrole>
+                         <colorrole role="Highlight">
+                          <brush brushstyle="SolidPattern">
+                           <color alpha="255">
+                            <red>240</red>
+                            <green>240</green>
+                            <blue>240</blue>
+                           </color>
+                          </brush>
+                         </colorrole>
+                        </disabled>
+                       </palette>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_salt_year">
+                      <property name="text">
+                       <string>TextLabel</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_75">
+                    <item>
+                     <widget class="QCheckBox" name="checkBox_salt_stacked">
+                      <property name="text">
+                       <string>Stacked</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="pushButton_salt_plot">
+                      <property name="text">
+                       <string>SHOW</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="pushButton_salt_export">
+                      <property name="text">
+                       <string>EXPORT</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -7732,6 +8089,25 @@ APEX-MODFLOW Simulation</string>
       </widget>
      </item>
      <item>
+      <widget class="QLabel" name="label_87">
+       <property name="maximumSize">
+        <size>
+         <width>135</width>
+         <height>55</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="resources.qrc">:/APEXMOD/pics/csu-logo.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -7776,7 +8152,7 @@ APEX-MODFLOW Simulation</string>
           </font>
          </property>
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;- Version: 1.2-&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;- Version: 1.3-&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -7814,5 +8190,6 @@ APEX-MODFLOW Simulation</string>
   <buttongroup name="buttonGroup_mf_swat"/>
   <buttongroup name="buttonGroup_irrig_swat_active"/>
   <buttongroup name="buttonGroup_mf_active"/>
+  <buttongroup name="buttonGroup_salt_ions"/>
  </buttongroups>
 </ui>

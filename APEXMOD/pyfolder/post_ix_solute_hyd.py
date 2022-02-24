@@ -20,6 +20,15 @@ import glob
 from PIL import Image
 import matplotlib.pyplot as plt
 
+def get_sub_no(self):
+    for self.layer in list(QgsProject.instance().mapLayers().values()):
+        if self.layer.name() == ("sub (APEX)"):
+            self.layer = QgsProject.instance().mapLayersByName("sub (APEX)")[0]
+            feats = self.layer.getFeatures()
+            # get sub number as a list
+            unsorted_subno = [str(f.attribute("Subbasin")) for f in feats]
+            # Sort this list
+            self.sorted_subno = sorted(unsorted_subno, key=int)
 
 def read_sub_no(self):
     stdate, eddate = self.define_sim_period()
@@ -73,7 +82,6 @@ def comps_dic():
             new_comps2.append(comp + suf)
     return comps_dic, new_comps2
 
-
 def get_compNames(self):
     comps, new_comps2 = comps_dic()
     APEXMOD_path_dict = self.dirs_and_paths()
@@ -101,7 +109,6 @@ def get_compNames(self):
     fullnams = ["Select Solute"] + fullnams
     self.dlg.comboBox_solutes_solute.clear()
     self.dlg.comboBox_solutes_solute.addItems(fullnams)
-
 
 def read_solute_df(self):
     APEXMOD_path_dict = self.dirs_and_paths()
@@ -156,7 +163,7 @@ def solute_plot(self):
 
 def export_solute_df(self):
     # Add info
-    version = "version 1.2."
+    version = "version 1.3."
     time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
     APEXMOD_path_dict = self.dirs_and_paths()
     stdate, eddate = self.define_sim_period()
@@ -191,3 +198,202 @@ def export_solute_df(self):
     msgBox.exec_()
 
 
+def read_salt_ions_channel(self):
+    APEXMOD_path_dict = self.dirs_and_paths()
+    stdate, eddate = self.define_sim_period()
+    wd_mf = APEXMOD_path_dict['SALINITY']
+    startDate = stdate.strftime("%m/%d/%Y")
+    start_year = stdate.strftime("%Y")
+    end_year = eddate.strftime("%Y")
+    
+    self.dlg.comboBox_salt_time.addItems(['Daily', 'Monthly', 'Annual'])
+    get_sub_no(self)
+    self.dlg.comboBox_salt_sub.clear()
+    self.dlg.comboBox_salt_sub.addItems(self.sorted_subno)
+    self.dlg.horizontalSlider_salt_start_year.setMinimum(int(start_year))
+    self.dlg.horizontalSlider_salt_start_year.setMaximum(int(end_year))
+    self.dlg.horizontalSlider_salt_start_year.setValue(int(start_year))
+    self.dlg.horizontalSlider_salt_start_year.setTickInterval(int(1))
+    self.dlg.horizontalSlider_salt_start_year.setTickPosition(QSlider.TicksBelow)
+
+    infile = 'salt.output.channels'
+
+    salt_ions_df = pd.read_csv(
+                os.path.join(wd_mf, infile),
+                delim_whitespace=True,
+                skiprows=4,
+                index_col=0)
+    # drop unnecessary cols
+    salt_ions_df.drop(['year', 'day', 'area(ha)'], axis=1, inplace=True)            
+    # rename cols
+    salt_ions = ['SO4', 'Ca2', 'Mg2', 'Na', 'K','Cl','CO3', 'HCO3']
+    salt_types = ['_load', '_conc']
+    salt_vars = []
+    for st in salt_types:
+        for si in salt_ions:
+            salt_vars.append(si+st)
+    salt_ions = ['Q_runoff', 'Q_total'] + salt_ions
+    salt_vars = ['Q_runoff', 'Q_total'] + salt_vars
+    salt_ions_df.columns = salt_vars
+    self.dlg.comboBox_salt_vars.clear()
+    self.dlg.comboBox_salt_vars.addItems(salt_ions)    
+    return salt_ions_df
+
+def salt_plot(self, salt_ions_df):
+    stdate, eddate = self.define_sim_period()
+    startDate = stdate.strftime("%m/%d/%Y")
+    endDate = eddate.strftime("%m/%d/%Y")
+    current_year = self.dlg.horizontalSlider_salt_start_year.value()
+    sub_no = self.dlg.comboBox_salt_sub.currentText()
+    salt_var = self.dlg.comboBox_salt_vars.currentText()
+    if self.dlg.radioButton_salt_mass.isChecked() and not (salt_var == 'Q_runoff' or salt_var == 'Q_total'):
+        salt_var = salt_var + '_load'
+    if self.dlg.radioButton_salt_conc.isChecked() and not (salt_var == 'Q_runoff' or salt_var == 'Q_total'):
+        salt_var = salt_var + '_conc'    
+    df = salt_ions_df.loc[int(sub_no), salt_var]
+    df.index = pd.date_range(startDate, periods=len(df))
+    if self.dlg.comboBox_salt_time.currentText() == 'Monthly':
+        df = df.resample('M').mean()
+    if self.dlg.comboBox_salt_time.currentText() == 'Annual':
+        df = df.resample('A').mean()
+    df = df["1/1/{}".format(current_year):endDate]
+    fig, ax = plt.subplots(figsize=(9, 4))
+    ax.set_ylabel(salt_var, fontsize=8)
+    ax.tick_params(axis='both', labelsize=8)
+    ax.plot(df.index, df)
+    plt.show()
+
+def salt_stacked_plot(self, salt_ions_df):
+    stdate, eddate = self.define_sim_period()
+    startDate = stdate.strftime("%m/%d/%Y")
+    endDate = eddate.strftime("%m/%d/%Y")
+    current_year = self.dlg.horizontalSlider_salt_start_year.value()
+    sub_no = self.dlg.comboBox_salt_sub.currentText()
+    salt_var = self.dlg.comboBox_salt_vars.currentText()
+
+    if salt_var == 'Q_runoff' or salt_var == 'Q_total':
+        msgBox = QMessageBox()
+        msgBox.setWindowIcon(QIcon(':/APEXMOD/pics/am_icon.png'))
+        msgBox.setWindowTitle("No flow!")
+        msgBox.setText("Please, select a salt ion!")
+        msgBox.exec_()
+    
+    else:
+        if self.dlg.radioButton_salt_mass.isChecked() and not (salt_var == 'Q_runoff' or salt_var == 'Q_total'):
+            load_cols = salt_ions_df.columns.tolist()[2:10]
+            df = salt_ions_df.loc[int(sub_no), load_cols]
+        if self.dlg.radioButton_salt_conc.isChecked() and not (salt_var == 'Q_runoff' or salt_var == 'Q_total'):
+            conc_cols = salt_ions_df.columns.tolist()[10:]
+            df = salt_ions_df.loc[int(sub_no), conc_cols]
+        
+        df.index = pd.date_range(startDate, periods=len(df))
+        if self.dlg.comboBox_salt_time.currentText() == 'Monthly':
+            df = df.resample('M').mean()
+        if self.dlg.comboBox_salt_time.currentText() == 'Annual':
+            df = df.resample('A').mean()
+        df = df["1/1/{}".format(current_year):endDate]
+        fig, ax = plt.subplots(figsize=(9, 4))
+        ax.stackplot(
+            df.index, df.iloc[:, 0], df.iloc[:, 1], df.iloc[:, 2], df.iloc[:, 3],
+            df.iloc[:, 4], df.iloc[:, 5], df.iloc[:, 6], df.iloc[:, 7], labels=df.columns.tolist()
+            )
+        ax.legend(loc='upper left',
+                    bbox_to_anchor=(-0.05, 1.1),
+                    fontsize=8,
+                    ncol=8)
+        plt.show()
+
+def export_salt_ion(self, salt_ions_df):
+    # Add info
+    version = "version 1.3."
+    time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
+    APEXMOD_path_dict = self.dirs_and_paths()
+    outfolder = APEXMOD_path_dict['exported_files']
+
+    stdate, eddate = self.define_sim_period()
+    startDate = stdate.strftime("%m/%d/%Y")
+    endDate = eddate.strftime("%m/%d/%Y")
+    current_year = self.dlg.horizontalSlider_salt_start_year.value()
+    sub_no = self.dlg.comboBox_salt_sub.currentText()
+    salt_var = self.dlg.comboBox_salt_vars.currentText()
+    if self.dlg.radioButton_salt_mass.isChecked() and not (salt_var == 'Q_runoff' or salt_var == 'Q_total'):
+        salt_var = salt_var + '_load'
+    if self.dlg.radioButton_salt_conc.isChecked() and not (salt_var == 'Q_runoff' or salt_var == 'Q_total'):
+        salt_var = salt_var + '_conc'    
+    df = salt_ions_df.loc[int(sub_no), salt_var]
+    df.index = pd.date_range(startDate, periods=len(df))
+    if self.dlg.comboBox_salt_time.currentText() == 'Monthly':
+        df = df.resample('M').mean()
+    if self.dlg.comboBox_salt_time.currentText() == 'Annual':
+        df = df.resample('A').mean()
+    df = df["1/1/{}".format(current_year):endDate]
+
+    # ------------ Export Data to file -------------- #
+    # with open(os.path.join(outfolder, "apexmf_solute(" + str(sub_no) + ")_{}".format(timestep)+".txt"), 'w') as f:
+
+    with open(os.path.join(outfolder, "salt_{}_sub({})_{}.txt".format(salt_var, sub_no, self.dlg.comboBox_salt_time.currentText())), 'w') as f:
+        # f.write("# apexmf_reach(" + str(sub_no) + ")_annual"+".txt is created by APEXMOD plugin "+ version + time + "\n")
+
+        f.write("# salt_{}_sub({})_{}.txt is created by APEXMOD plugin {} {}\n".format(salt_var, sub_no, self.dlg.comboBox_salt_time.currentText(), version, time))
+        df.to_csv(f, index_label="Date", sep='\t', float_format='%10.4f', line_terminator='\n', encoding='utf-8')
+        f.write('\n')
+    msgBox = QMessageBox()
+    msgBox.setWindowIcon(QIcon(':/APEXMOD/pics/am_icon.png'))
+    msgBox.setWindowTitle("Exported!")
+    # msgBox.setText("'apexmf_reach(" + str(sub_no)+")_annual.txt' file is exported to your 'exported_files' folder!")
+    msgBox.setText("'salt_{}_sub({})_{}.txt' file was exported to 'exported files' folder.".format(salt_var, sub_no, self.dlg.comboBox_salt_time.currentText()))
+    msgBox.exec_()
+
+
+def export_salt_mass_conc(self, salt_ions_df):
+    # Add info
+    version = "version 1.3."
+    time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
+    APEXMOD_path_dict = self.dirs_and_paths()
+    outfolder = APEXMOD_path_dict['exported_files']
+
+    stdate, eddate = self.define_sim_period()
+    startDate = stdate.strftime("%m/%d/%Y")
+    endDate = eddate.strftime("%m/%d/%Y")
+    current_year = self.dlg.horizontalSlider_salt_start_year.value()
+    sub_no = self.dlg.comboBox_salt_sub.currentText()
+    salt_var = self.dlg.comboBox_salt_vars.currentText()
+
+    if salt_var == 'Q_runoff' or salt_var == 'Q_total':
+        msgBox = QMessageBox()
+        msgBox.setWindowIcon(QIcon(':/APEXMOD/pics/am_icon.png'))
+        msgBox.setWindowTitle("No flow!")
+        msgBox.setText("Please, select a salt ion!")
+        msgBox.exec_()
+    
+    else:
+        if self.dlg.radioButton_salt_mass.isChecked() and not (salt_var == 'Q_runoff' or salt_var == 'Q_total'):
+            load_cols = salt_ions_df.columns.tolist()[2:10]
+            df = salt_ions_df.loc[int(sub_no), load_cols]
+            salt_var = 'mass'
+        if self.dlg.radioButton_salt_conc.isChecked() and not (salt_var == 'Q_runoff' or salt_var == 'Q_total'):
+            conc_cols = salt_ions_df.columns.tolist()[10:]
+            df = salt_ions_df.loc[int(sub_no), conc_cols]
+            salt_var = 'conc'
+        df.index = pd.date_range(startDate, periods=len(df))
+        if self.dlg.comboBox_salt_time.currentText() == 'Monthly':
+            df = df.resample('M').mean()
+        if self.dlg.comboBox_salt_time.currentText() == 'Annual':
+            df = df.resample('A').mean()
+        df = df["1/1/{}".format(current_year):endDate]
+
+    # ------------ Export Data to file -------------- #
+    # with open(os.path.join(outfolder, "apexmf_solute(" + str(sub_no) + ")_{}".format(timestep)+".txt"), 'w') as f:
+
+    with open(os.path.join(outfolder, "salt_{}_sub({})_{}.txt".format(salt_var, sub_no, self.dlg.comboBox_salt_time.currentText())), 'w') as f:
+        # f.write("# apexmf_reach(" + str(sub_no) + ")_annual"+".txt is created by APEXMOD plugin "+ version + time + "\n")
+
+        f.write("# salt_{}_sub({})_{}.txt is created by APEXMOD plugin {} {}\n".format(salt_var, sub_no, self.dlg.comboBox_salt_time.currentText(), version, time))
+        df.to_csv(f, index_label="Date", sep='\t', float_format='%10.4f', line_terminator='\n', encoding='utf-8')
+        f.write('\n')
+    msgBox = QMessageBox()
+    msgBox.setWindowIcon(QIcon(':/APEXMOD/pics/am_icon.png'))
+    msgBox.setWindowTitle("Exported!")
+    # msgBox.setText("'apexmf_reach(" + str(sub_no)+")_annual.txt' file is exported to your 'exported_files' folder!")
+    msgBox.setText("'salt_{}_sub({})_{}.txt' file was exported to 'exported files' folder.".format(salt_var, sub_no, self.dlg.comboBox_salt_time.currentText()))
+    msgBox.exec_()

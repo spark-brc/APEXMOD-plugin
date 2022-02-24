@@ -389,6 +389,12 @@ class APEXMOD(object):
         self.dlg.mGroupBox_rt_avg.toggled.connect(self.create_avg_m_shps)
         self.dlg.mGroupBox_cvt_vtr.toggled.connect(self.read_vector_maps)
         self.dlg.pushButton_cvt_vtr.clicked.connect(self.cvt_vtr)
+
+        # 5th tab for Salt
+        self.dlg.horizontalSlider_salt_start_year.valueChanged.connect(self.salt_year_label)
+        self.dlg.groupBox_salt_channel.toggled.connect(self.activate_salt_channel)
+        self.dlg.pushButton_salt_plot.clicked.connect(self.salt_ions_plot)
+        self.dlg.pushButton_salt_export.clicked.connect(self.salt_export)
         
         # ---------------------------------------------------------------------------------------------
         # Run
@@ -720,8 +726,8 @@ class APEXMOD(object):
             ):
             self.dlg.groupBox_MF_options.setEnabled(True)
             self.dlg.lineEdit_MODFLOW.setEnabled(True)
-            self.dlg.mf_option_1.setEnabled(False)
-            self.dlg.mf_option_2.setEnabled(False)
+            self.dlg.mf_option_1.setEnabled(True)
+            self.dlg.mf_option_2.setEnabled(True)
             self.dlg.groupBox_river_cells.setEnabled(False)
 
             self.mf_options()
@@ -1663,8 +1669,6 @@ class APEXMOD(object):
         #     not comp == 'solute'):
         #     post_vii_nitrate.read_mf_nOflayers(self)
         #     post_vii_nitrate.read_mf_nitrate_dates(self)
-            
-
 
     def get_compNames(self):
         post_vii_nitrate.get_compNames(self)
@@ -1750,5 +1754,28 @@ class APEXMOD(object):
         #         self.dlg.mGroupBox_rt_avg.isChecked()):
         #     self.export_rt_cno3_avg_m()
 
+    # NOTE: 5th | salt ion in channel
+    def salt_year_label(self):
+        current_year = self.dlg.horizontalSlider_salt_start_year.value()
+        self.dlg.label_salt_year.setText(str(current_year))
+
+    def activate_salt_channel(self):
+        if self.dlg.groupBox_salt_channel.isChecked():
+            self.salt_ions_df = post_ix_solute_hyd.read_salt_ions_channel(self)
+
+    def salt_ions_plot(self):
+        # post_ix_solute_hyd.read_salt_ions_channel(self)
+        salt_ions_df = self.salt_ions_df
+        if not self.dlg.checkBox_salt_stacked.isChecked():
+            post_ix_solute_hyd.salt_plot(self, salt_ions_df)
+        if self.dlg.checkBox_salt_stacked.isChecked():
+            post_ix_solute_hyd.salt_stacked_plot(self, salt_ions_df)
+    
+    def salt_export(self):
+        salt_ions_df = self.salt_ions_df
+        if not self.dlg.checkBox_salt_stacked.isChecked():
+            post_ix_solute_hyd.export_salt_ion(self, salt_ions_df)
+        if self.dlg.checkBox_salt_stacked.isChecked():
+            post_ix_solute_hyd.export_salt_mass_conc(self, salt_ions_df)
 
 # ---

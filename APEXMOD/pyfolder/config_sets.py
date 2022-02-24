@@ -721,7 +721,7 @@ def modify_wel(self):
     nWel_swat = layer.featureCount()
 
     # Modify an exsiting Wel file
-    version = "version 1.2."
+    version = "version 1.3."
     time = datetime.datetime.now().strftime(' - %m/%d/%y %H:%M:%S -')
 
     if any(inFile.endswith('.wel') for inFile in os.listdir(wd)):

@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="APEXMOD">
+    <file>pics/csu-logo.png</file>
     <file>pics/flowchart.png</file>
     <file>pics/blm-logo.png</file>
     <file>pics/am_icon.png</file>
