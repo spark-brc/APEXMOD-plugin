@@ -57,7 +57,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>3</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideNone</enum>
@@ -4015,7 +4015,7 @@ APEX-MODFLOW Simulation</string>
             <x>0</x>
             <y>0</y>
             <width>606</width>
-            <height>737</height>
+            <height>766</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4100,155 +4100,22 @@ APEX-MODFLOW Simulation</string>
                <number>6</number>
               </property>
               <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_55">
-                <property name="spacing">
-                 <number>6</number>
-                </property>
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_81">
                 <property name="topMargin">
-                 <number>0</number>
+                 <number>10</number>
                 </property>
                 <item>
-                 <widget class="QCheckBox" name="checkBox_stream_obd">
-                  <property name="font">
-                   <font>
-                    <pointsize>8</pointsize>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>   Check if &quot;streamflow.obd&quot; file is prepared.</string>
-                  </property>
-                  <property name="tristate">
-                   <bool>false</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="Line" name="line_17">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_2">
+                 <widget class="QGroupBox" name="groupBox_15">
                   <property name="font">
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
                   </property>
-                  <property name="text">
-                   <string>Plot Type:</string>
+                  <property name="title">
+                   <string>Simulated Data</string>
                   </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QRadioButton" name="radioButton_str_obd_line">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Line</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                  <attribute name="buttonGroup">
-                   <string notr="true">buttonGroup_str_obd</string>
-                  </attribute>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QRadioButton" name="radioButton_str_obd_pt">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Point</string>
-                  </property>
-                  <attribute name="buttonGroup">
-                   <string notr="true">buttonGroup_str_obd</string>
-                  </attribute>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_9">
-                  <property name="font">
-                   <font>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>-Size:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QSpinBox" name="spinBox_str_obd_size">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="value">
-                   <number>20</number>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_12">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_24">
-                <property name="spacing">
-                 <number>3</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QFrame" name="frame_2">
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_29">
+                  <layout class="QHBoxLayout" name="horizontalLayout_82">
                    <property name="spacing">
                     <number>3</number>
                    </property>
@@ -4265,31 +4132,36 @@ APEX-MODFLOW Simulation</string>
                     <number>3</number>
                    </property>
                    <item>
-                    <widget class="QLabel" name="label_42">
-                     <property name="font">
-                      <font>
-                       <weight>50</weight>
-                       <bold>false</bold>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>Time</string>
-                     </property>
-                    </widget>
+                    <widget class="QComboBox" name="comboBox_cha_time"/>
                    </item>
                    <item>
-                    <widget class="QComboBox" name="comboBox_SD_timeStep"/>
+                    <widget class="QComboBox" name="comboBox_cha_sub_no"/>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="comboBox_cha_vars"/>
                    </item>
                   </layout>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QFrame" name="frame_5">
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
+                 <widget class="QGroupBox" name="groupBox_cha_obd">
+                  <property name="enabled">
+                   <bool>true</bool>
                   </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="title">
+                   <string>Observed Data</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_54">
                    <property name="spacing">
@@ -4308,193 +4180,193 @@ APEX-MODFLOW Simulation</string>
                     <number>3</number>
                    </property>
                    <item>
-                    <widget class="QLabel" name="label_6">
-                     <property name="font">
-                      <font>
-                       <weight>50</weight>
-                       <bold>false</bold>
-                      </font>
+                    <layout class="QHBoxLayout" name="horizontalLayout_77">
+                     <property name="rightMargin">
+                      <number>0</number>
                      </property>
-                     <property name="text">
-                      <string>RCH File</string>
-                     </property>
-                    </widget>
+                     <item>
+                      <widget class="QComboBox" name="comboBox_cha_obd_files">
+                       <property name="minimumSize">
+                        <size>
+                         <width>200</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="comboBox_cha_obd_gages"/>
+                     </item>
+                    </layout>
                    </item>
                    <item>
-                    <widget class="QComboBox" name="comboBox_rch_files"/>
+                    <layout class="QHBoxLayout" name="horizontalLayout_24">
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QRadioButton" name="radioButton_cha_obd_point">
+                       <property name="text">
+                        <string>Point</string>
+                       </property>
+                       <property name="checked">
+                        <bool>true</bool>
+                       </property>
+                       <attribute name="buttonGroup">
+                        <string notr="true">buttonGroup_cha_obd</string>
+                       </attribute>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QRadioButton" name="radioButton_cha_obd_line">
+                       <property name="text">
+                        <string>Line</string>
+                       </property>
+                       <attribute name="buttonGroup">
+                        <string notr="true">buttonGroup_cha_obd</string>
+                       </attribute>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="Line" name="line_17">
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSpinBox" name="spinBox_cha_obd_size">
+                       <property name="value">
+                        <number>20</number>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                   </layout>
                  </widget>
                 </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_75">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
                 <item>
-                 <widget class="QFrame" name="frame_3">
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
+                 <widget class="QSlider" name="horizontalSlider_cha_start_year">
+                  <property name="palette">
+                   <palette>
+                    <active>
+                     <colorrole role="Button">
+                      <brush brushstyle="SolidPattern">
+                       <color alpha="255">
+                        <red>0</red>
+                        <green>122</green>
+                        <blue>217</blue>
+                       </color>
+                      </brush>
+                     </colorrole>
+                     <colorrole role="Highlight">
+                      <brush brushstyle="SolidPattern">
+                       <color alpha="255">
+                        <red>240</red>
+                        <green>240</green>
+                        <blue>240</blue>
+                       </color>
+                      </brush>
+                     </colorrole>
+                    </active>
+                    <inactive>
+                     <colorrole role="Button">
+                      <brush brushstyle="SolidPattern">
+                       <color alpha="255">
+                        <red>240</red>
+                        <green>240</green>
+                        <blue>240</blue>
+                       </color>
+                      </brush>
+                     </colorrole>
+                     <colorrole role="Highlight">
+                      <brush brushstyle="SolidPattern">
+                       <color alpha="255">
+                        <red>240</red>
+                        <green>240</green>
+                        <blue>240</blue>
+                       </color>
+                      </brush>
+                     </colorrole>
+                    </inactive>
+                    <disabled>
+                     <colorrole role="Button">
+                      <brush brushstyle="SolidPattern">
+                       <color alpha="255">
+                        <red>240</red>
+                        <green>240</green>
+                        <blue>240</blue>
+                       </color>
+                      </brush>
+                     </colorrole>
+                     <colorrole role="Highlight">
+                      <brush brushstyle="SolidPattern">
+                       <color alpha="255">
+                        <red>240</red>
+                        <green>240</green>
+                        <blue>240</blue>
+                       </color>
+                      </brush>
+                     </colorrole>
+                    </disabled>
+                   </palette>
                   </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_30">
-                   <property name="spacing">
-                    <number>3</number>
-                   </property>
-                   <property name="leftMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>3</number>
-                   </property>
-                   <item>
-                    <widget class="QLabel" name="label_44">
-                     <property name="font">
-                      <font>
-                       <weight>50</weight>
-                       <bold>false</bold>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>Reach No.</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="comboBox_sub_number"/>
-                   </item>
-                  </layout>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QFrame" name="frame_19">
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
+                 <widget class="QLabel" name="label_cha_year">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
                   </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
+                  <property name="text">
+                   <string>Warm-up</string>
                   </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_55">
-                   <property name="spacing">
-                    <number>3</number>
-                   </property>
-                   <property name="leftMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>3</number>
-                   </property>
-                   <item>
-                    <widget class="QLabel" name="label_17">
-                     <property name="font">
-                      <font>
-                       <weight>50</weight>
-                       <bold>false</bold>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>Variable</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="comboBox_rch_vars"/>
-                   </item>
-                  </layout>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QFrame" name="frame_sd_obd">
+                 <widget class="QPushButton" name="pushButton_plot_cha">
                   <property name="enabled">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                   </font>
                   </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
+                  <property name="text">
+                   <string>SHOW</string>
                   </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_31">
-                   <property name="spacing">
-                    <number>3</number>
-                   </property>
-                   <property name="leftMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>3</number>
-                   </property>
-                   <item>
-                    <widget class="QLabel" name="label_45">
-                     <property name="font">
-                      <font>
-                       <weight>50</weight>
-                       <bold>false</bold>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>Observed Data</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="comboBox_SD_obs_data"/>
-                   </item>
-                  </layout>
                  </widget>
                 </item>
                 <item>
-                 <layout class="QVBoxLayout" name="verticalLayout_20">
-                  <property name="spacing">
-                   <number>3</number>
+                 <widget class="QPushButton" name="pushButton_export_cha">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
                   </property>
-                  <item>
-                   <widget class="QPushButton" name="pushButton_plot_sd">
-                    <property name="enabled">
-                     <bool>true</bool>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>SHOW</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="pushButton_export_sd">
-                    <property name="font">
-                     <font>
-                      <weight>50</weight>
-                      <bold>false</bold>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>EXPORT</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
+                  <property name="text">
+                   <string>EXPORT</string>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
@@ -6746,6 +6618,12 @@ APEX-MODFLOW Simulation</string>
            </item>
            <item>
             <widget class="QGroupBox" name="groupBox_11">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
              <property name="title">
               <string>Groundwater / Surface Water Solute Exchange (kg/day) for each APEX Subarea</string>
              </property>
@@ -6787,13 +6665,26 @@ APEX-MODFLOW Simulation</string>
                    </property>
                    <item>
                     <widget class="QLabel" name="label_77">
+                     <property name="font">
+                      <font>
+                       <weight>50</weight>
+                       <bold>false</bold>
+                      </font>
+                     </property>
                      <property name="text">
                       <string>Time</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QComboBox" name="comboBox_solute_time"/>
+                    <widget class="QComboBox" name="comboBox_solute_time">
+                     <property name="font">
+                      <font>
+                       <weight>50</weight>
+                       <bold>false</bold>
+                      </font>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </widget>
@@ -6824,13 +6715,26 @@ APEX-MODFLOW Simulation</string>
                    </property>
                    <item>
                     <widget class="QLabel" name="label_79">
+                     <property name="font">
+                      <font>
+                       <weight>50</weight>
+                       <bold>false</bold>
+                      </font>
+                     </property>
                      <property name="text">
                       <string>Subarea No.</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QComboBox" name="comboBox_sub_no_solute"/>
+                    <widget class="QComboBox" name="comboBox_sub_no_solute">
+                     <property name="font">
+                      <font>
+                       <weight>50</weight>
+                       <bold>false</bold>
+                      </font>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </widget>
@@ -6861,13 +6765,26 @@ APEX-MODFLOW Simulation</string>
                    </property>
                    <item>
                     <widget class="QLabel" name="label_80">
+                     <property name="font">
+                      <font>
+                       <weight>50</weight>
+                       <bold>false</bold>
+                      </font>
+                     </property>
                      <property name="text">
                       <string>Solute (kg/day)</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QComboBox" name="comboBox_solutes_solute"/>
+                    <widget class="QComboBox" name="comboBox_solutes_solute">
+                     <property name="font">
+                      <font>
+                       <weight>50</weight>
+                       <bold>false</bold>
+                      </font>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </widget>
@@ -6958,6 +6875,12 @@ APEX-MODFLOW Simulation</string>
                     </item>
                     <item>
                      <widget class="QLabel" name="label_solute_year">
+                      <property name="font">
+                       <font>
+                        <weight>50</weight>
+                        <bold>false</bold>
+                       </font>
+                      </property>
                       <property name="text">
                        <string>Warm-up</string>
                       </property>
@@ -6972,6 +6895,12 @@ APEX-MODFLOW Simulation</string>
                     </property>
                     <item>
                      <widget class="QPushButton" name="pushButton_solute_plot_show">
+                      <property name="font">
+                       <font>
+                        <weight>50</weight>
+                        <bold>false</bold>
+                       </font>
+                      </property>
                       <property name="text">
                        <string>SHOW</string>
                       </property>
@@ -6979,6 +6908,12 @@ APEX-MODFLOW Simulation</string>
                     </item>
                     <item>
                      <widget class="QPushButton" name="pushButton_solute_df_export">
+                      <property name="font">
+                       <font>
+                        <weight>50</weight>
+                        <bold>false</bold>
+                       </font>
+                      </property>
                       <property name="text">
                        <string>EXPORT</string>
                       </property>
@@ -6997,8 +6932,8 @@ APEX-MODFLOW Simulation</string>
             <widget class="QGroupBox" name="groupBox_export_solutes">
              <property name="font">
               <font>
-               <weight>50</weight>
-               <bold>false</bold>
+               <weight>75</weight>
+               <bold>true</bold>
                <kerning>false</kerning>
               </font>
              </property>
@@ -7019,6 +6954,12 @@ APEX-MODFLOW Simulation</string>
                 </property>
                 <item>
                  <widget class="QLabel" name="label_83">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
                   <property name="text">
                    <string>Select Solute:</string>
                   </property>
@@ -7028,7 +6969,7 @@ APEX-MODFLOW Simulation</string>
                  <widget class="QComboBox" name="comboBox_solutes">
                   <property name="minimumSize">
                    <size>
-                    <width>150</width>
+                    <width>130</width>
                     <height>0</height>
                    </size>
                   </property>
@@ -7069,6 +7010,12 @@ APEX-MODFLOW Simulation</string>
                 </item>
                 <item>
                  <widget class="QLabel" name="label_84">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
                   <property name="text">
                    <string>Layer:</string>
                   </property>
@@ -7131,6 +7078,12 @@ APEX-MODFLOW Simulation</string>
                 </item>
                 <item>
                  <widget class="QLabel" name="label_85">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
                   <property name="text">
                    <string>Time Step:</string>
                   </property>
@@ -7716,8 +7669,8 @@ APEX-MODFLOW Simulation</string>
             <widget class="QGroupBox" name="groupBox_salt_channel">
              <property name="font">
               <font>
-               <weight>50</weight>
-               <bold>false</bold>
+               <weight>75</weight>
+               <bold>true</bold>
                <kerning>true</kerning>
               </font>
              </property>
@@ -7730,21 +7683,132 @@ APEX-MODFLOW Simulation</string>
              <property name="checked">
               <bool>false</bool>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_73">
+             <layout class="QVBoxLayout" name="verticalLayout_71">
+              <property name="spacing">
+               <number>3</number>
+              </property>
+              <property name="leftMargin">
+               <number>6</number>
+              </property>
+              <property name="topMargin">
+               <number>6</number>
+              </property>
+              <property name="rightMargin">
+               <number>6</number>
+              </property>
+              <property name="bottomMargin">
+               <number>6</number>
+              </property>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_72">
                 <property name="topMargin">
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QFrame" name="frame_23">
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
+                 <widget class="QGroupBox" name="groupBox_13">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
                   </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
+                  <property name="title">
+                   <string>Simulated Data</string>
                   </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_67">
+                  <layout class="QVBoxLayout" name="verticalLayout_30">
+                   <property name="spacing">
+                    <number>3</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>6</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>6</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>6</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>6</number>
+                   </property>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_79">
+                     <item>
+                      <widget class="QComboBox" name="comboBox_salt_time"/>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="comboBox_salt_sub"/>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="comboBox_salt_vars"/>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_80">
+                     <item>
+                      <widget class="QRadioButton" name="radioButton_salt_mass">
+                       <property name="text">
+                        <string>MASS (kg)</string>
+                       </property>
+                       <property name="checked">
+                        <bool>true</bool>
+                       </property>
+                       <attribute name="buttonGroup">
+                        <string notr="true">buttonGroup_salt_ions</string>
+                       </attribute>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QRadioButton" name="radioButton_salt_conc">
+                       <property name="text">
+                        <string>CONC (mg/L)</string>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                       <attribute name="buttonGroup">
+                        <string notr="true">buttonGroup_salt_ions</string>
+                       </attribute>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="Line" name="line_20">
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="checkBox_salt_stacked">
+                       <property name="text">
+                        <string>Stacked</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBox_salt_obd">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="title">
+                   <string>Observed Data</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_29">
                    <property name="spacing">
                     <number>3</number>
                    </property>
@@ -7761,241 +7825,184 @@ APEX-MODFLOW Simulation</string>
                     <number>3</number>
                    </property>
                    <item>
-                    <widget class="QLabel" name="label_81">
-                     <property name="text">
-                      <string>Time</string>
+                    <layout class="QHBoxLayout" name="horizontalLayout_73">
+                     <property name="topMargin">
+                      <number>0</number>
                      </property>
-                    </widget>
+                     <item>
+                      <widget class="QComboBox" name="comboBox_salt_obd_files">
+                       <property name="minimumSize">
+                        <size>
+                         <width>200</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="comboBox_salt_obd_gages"/>
+                     </item>
+                    </layout>
                    </item>
                    <item>
-                    <widget class="QComboBox" name="comboBox_salt_time"/>
+                    <layout class="QHBoxLayout" name="horizontalLayout_78">
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QRadioButton" name="radioButton_salt_obd_pts">
+                       <property name="text">
+                        <string>Point</string>
+                       </property>
+                       <property name="checked">
+                        <bool>true</bool>
+                       </property>
+                       <attribute name="buttonGroup">
+                        <string notr="true">buttonGroup_salt_obd</string>
+                       </attribute>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QRadioButton" name="radioButton_salt_obd_lines">
+                       <property name="text">
+                        <string>Line</string>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                       <attribute name="buttonGroup">
+                        <string notr="true">buttonGroup_salt_obd</string>
+                       </attribute>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSpinBox" name="spinBox_salt_obd_size">
+                       <property name="value">
+                        <number>20</number>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                   </layout>
                  </widget>
                 </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_74">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
                 <item>
-                 <widget class="QFrame" name="frame_24">
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
+                 <widget class="QSlider" name="horizontalSlider_salt_start_year">
+                  <property name="palette">
+                   <palette>
+                    <active>
+                     <colorrole role="Button">
+                      <brush brushstyle="SolidPattern">
+                       <color alpha="255">
+                        <red>0</red>
+                        <green>122</green>
+                        <blue>217</blue>
+                       </color>
+                      </brush>
+                     </colorrole>
+                     <colorrole role="Highlight">
+                      <brush brushstyle="SolidPattern">
+                       <color alpha="255">
+                        <red>240</red>
+                        <green>240</green>
+                        <blue>240</blue>
+                       </color>
+                      </brush>
+                     </colorrole>
+                    </active>
+                    <inactive>
+                     <colorrole role="Button">
+                      <brush brushstyle="SolidPattern">
+                       <color alpha="255">
+                        <red>240</red>
+                        <green>240</green>
+                        <blue>240</blue>
+                       </color>
+                      </brush>
+                     </colorrole>
+                     <colorrole role="Highlight">
+                      <brush brushstyle="SolidPattern">
+                       <color alpha="255">
+                        <red>240</red>
+                        <green>240</green>
+                        <blue>240</blue>
+                       </color>
+                      </brush>
+                     </colorrole>
+                    </inactive>
+                    <disabled>
+                     <colorrole role="Button">
+                      <brush brushstyle="SolidPattern">
+                       <color alpha="255">
+                        <red>240</red>
+                        <green>240</green>
+                        <blue>240</blue>
+                       </color>
+                      </brush>
+                     </colorrole>
+                     <colorrole role="Highlight">
+                      <brush brushstyle="SolidPattern">
+                       <color alpha="255">
+                        <red>240</red>
+                        <green>240</green>
+                        <blue>240</blue>
+                       </color>
+                      </brush>
+                     </colorrole>
+                    </disabled>
+                   </palette>
                   </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_68">
-                   <property name="spacing">
-                    <number>3</number>
-                   </property>
-                   <property name="leftMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>3</number>
-                   </property>
-                   <item>
-                    <widget class="QLabel" name="label_82">
-                     <property name="text">
-                      <string>Subarea No.</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="comboBox_salt_sub"/>
-                   </item>
-                  </layout>
                  </widget>
                 </item>
                 <item>
-                 <layout class="QVBoxLayout" name="verticalLayout_72">
-                  <property name="spacing">
-                   <number>0</number>
+                 <widget class="QLabel" name="label_salt_year">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
                   </property>
-                  <property name="rightMargin">
-                   <number>0</number>
+                  <property name="text">
+                   <string>Warm-up</string>
                   </property>
-                  <item>
-                   <widget class="QRadioButton" name="radioButton_salt_mass">
-                    <property name="text">
-                     <string>MASS (kg)</string>
-                    </property>
-                    <property name="checked">
-                     <bool>true</bool>
-                    </property>
-                    <attribute name="buttonGroup">
-                     <string notr="true">buttonGroup_salt_ions</string>
-                    </attribute>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QRadioButton" name="radioButton_salt_conc">
-                    <property name="text">
-                     <string>CONC (mg/L)</string>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                    <attribute name="buttonGroup">
-                     <string notr="true">buttonGroup_salt_ions</string>
-                    </attribute>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <widget class="QFrame" name="frame_25">
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_69">
-                   <property name="spacing">
-                    <number>3</number>
-                   </property>
-                   <property name="leftMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>3</number>
-                   </property>
-                   <item>
-                    <widget class="QLabel" name="label_86">
-                     <property name="text">
-                      <string>Variable</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="comboBox_salt_vars"/>
-                   </item>
-                  </layout>
                  </widget>
                 </item>
                 <item>
-                 <layout class="QVBoxLayout" name="verticalLayout_70">
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_74">
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QSlider" name="horizontalSlider_salt_start_year">
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="Button">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>0</red>
-                            <green>122</green>
-                            <blue>217</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                         <colorrole role="Highlight">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>240</red>
-                            <green>240</green>
-                            <blue>240</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="Button">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>240</red>
-                            <green>240</green>
-                            <blue>240</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                         <colorrole role="Highlight">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>240</red>
-                            <green>240</green>
-                            <blue>240</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="Button">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>240</red>
-                            <green>240</green>
-                            <blue>240</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                         <colorrole role="Highlight">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>240</red>
-                            <green>240</green>
-                            <blue>240</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_salt_year">
-                      <property name="text">
-                       <string>TextLabel</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_75">
-                    <item>
-                     <widget class="QCheckBox" name="checkBox_salt_stacked">
-                      <property name="text">
-                       <string>Stacked</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="pushButton_salt_plot">
-                      <property name="text">
-                       <string>SHOW</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="pushButton_salt_export">
-                      <property name="text">
-                       <string>EXPORT</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
+                 <widget class="QPushButton" name="pushButton_salt_plot">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>SHOW</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_salt_export">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>EXPORT</string>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
@@ -8180,16 +8187,18 @@ APEX-MODFLOW Simulation</string>
  </customwidgets>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_wt_obd"/>
-  <buttongroup name="buttonGroup_str_obd"/>
   <buttongroup name="buttonGroup_irrig_active"/>
+  <buttongroup name="buttonGroup_irrig_swat_active"/>
+  <buttongroup name="buttonGroup_str_obd"/>
+  <buttongroup name="buttonGroup_salt_ions"/>
   <buttongroup name="buttonGroup_head_recharge"/>
-  <buttongroup name="buttonGroup_drain_active"/>
   <buttongroup name="buttonGroup_gw_delay"/>
   <buttongroup name="buttonGroup_RT3D_active"/>
+  <buttongroup name="buttonGroup_wt_obd"/>
+  <buttongroup name="buttonGroup_drain_active"/>
   <buttongroup name="buttonGroup_mf_swat"/>
-  <buttongroup name="buttonGroup_irrig_swat_active"/>
   <buttongroup name="buttonGroup_mf_active"/>
-  <buttongroup name="buttonGroup_salt_ions"/>
+  <buttongroup name="buttonGroup_salt_obd"/>
+  <buttongroup name="buttonGroup_cha_obd"/>
  </buttongroups>
 </ui>
