@@ -411,9 +411,10 @@ def get_salt_obd_gages(self):
     wd = APEXMOD_path_dict['apexmf_model']
     infile = self.dlg.comboBox_salt_obd_files.currentText()
     df = pd.read_csv(
-                        os.path.join(wd, infile), 
+                        os.path.join(wd, infile),
                         sep='\t',
                         index_col=0,
+                        comment='#', 
                         na_values=[-999, ""],
                         parse_dates=True)
     self.dlg.comboBox_salt_obd_gages.clear()
@@ -445,6 +446,7 @@ def get_salt_sims_obds(self, salt_ions_df):
     obds = pd.read_csv(
                         os.path.join(wd, infile), 
                         sep='\t',
+                        comment='#', 
                         index_col=0,
                         na_values=[-999, ""],
                         parse_dates=True)
@@ -459,8 +461,6 @@ def get_salt_sims_obds(self, salt_ions_df):
         obds = obds.resample('A').mean()
     sims = sims["1/1/{}".format(current_year):endDate]
     obds = obds["1/1/{}".format(current_year):endDate]
-
-
     df_ = pd.concat([sims, obds], axis=1)
     df_d = df_.dropna(how='any', axis=0)
     sims_ = df_d.iloc[:, 0].to_numpy()
@@ -519,17 +519,13 @@ def export_salt_sims_obds(self, salt_ions_df):
     APEXMOD_path_dict = self.dirs_and_paths()
     outfolder = APEXMOD_path_dict['exported_files']
     sims, obds, df = get_salt_sims_obds(self, salt_ions_df)
-
     nse = ObjFns.nse(sims, obds)
     rmse = ObjFns.rmse(sims, obds)
     pbias = ObjFns.pbias(sims, obds)
     rsq = ObjFns.rsq(sims, obds)
-
-
     sub_no = self.dlg.comboBox_salt_sub.currentText()
     salt_var = self.dlg.comboBox_salt_vars.currentText()
     salt_time = self.dlg.comboBox_salt_time.currentText()
-
 
     # ------------ Export Data to file -------------- #
     # with open(os.path.join(outfolder, "apexmf_solute(" + str(sub_no) + ")_{}".format(timestep)+".txt"), 'w') as f:

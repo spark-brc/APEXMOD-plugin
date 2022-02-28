@@ -93,19 +93,6 @@ def read_cha_obd_files(self):
     self.dlg.comboBox_cha_obd_files.clear()
     self.dlg.comboBox_cha_obd_files.addItems(cha_obd_files)
 
-def get_cha_obd_gages(self):
-    APEXMOD_path_dict = self.dirs_and_paths()
-    wd = APEXMOD_path_dict['apexmf_model']
-    infile = self.dlg.comboBox_cha_obd_files.currentText()
-    df = pd.read_csv(
-                        os.path.join(wd, infile), 
-                        sep='\t',
-                        index_col=0,
-                        na_values=[-999, ""],
-                        parse_dates=True)
-    self.dlg.comboBox_cha_obd_gages.clear()
-    self.dlg.comboBox_cha_obd_gages.addItems(df.columns.tolist())
-
 def get_cha_sims_obds(self):
     APEXMOD_path_dict = self.dirs_and_paths()
     wd = APEXMOD_path_dict['apexmf_model']
@@ -129,6 +116,7 @@ def get_cha_sims_obds(self):
     obds = pd.read_csv(
                         os.path.join(wd, infile), 
                         sep='\t',
+                        comment='#',
                         index_col=0,
                         na_values=[-999, ""],
                         parse_dates=True)
