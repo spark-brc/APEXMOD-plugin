@@ -65,7 +65,7 @@ from .pyfolder import db_functions
 from .pyfolder import runSim_link
 from .pyfolder import modflow_functions
 from .pyfolder import linking_process
-from .pyfolder import post_i_str
+from .pyfolder import post_i_cha
 from .pyfolder import post_ii_wt
 from .pyfolder import post_iii_rch
 from .pyfolder import post_iv_gwsw
@@ -78,6 +78,7 @@ from .pyfolder import cvt_plotsToVideo
 from .pyfolder import retrieve_ProjHistory
 from .pyfolder import config_sets
 from .pyfolder import load_inputs
+# from .pyfolder import apexmod_utils
 
 # ----------------------------------------------------------------------#
 import time
@@ -284,8 +285,8 @@ class APEXMOD(object):
         self.dlg.pushButton_gw_delay_multi.clicked.connect(self.gw_delay)
 
         ### fourthTab
-        self.dlg.comboBox_SD_timeStep.clear()
-        self.dlg.comboBox_SD_timeStep.addItems(['Daily', 'Monthly', 'Annual'])
+        # self.dlg.comboBox_cha_time.clear()
+        # self.dlg.comboBox_cha_time.addItems(['Daily', 'Monthly', 'Annual'])
         # self.dlg.comboBox_SD_plotType.clear()
         # self.dlg.comboBox_SD_plotType.addItems(['Static Plot', 'Dynamic Plot'])
         self.dlg.comboBox_hh_time.clear()
@@ -299,13 +300,18 @@ class APEXMOD(object):
             ['gist_rainbow', 'rainbow', 'jet', 'spring', 'summer', 'autumn',
                 'winter', 'cool', 'gray', 'Spectral'])
 
-        # === plot
-        self.dlg.pushButton_plot_sd.clicked.connect(self.plot_sd)
+        # NOTE: 4th Tab
+        self.dlg.horizontalSlider_cha_start_year.valueChanged.connect(self.cha_year_label)
+        self.dlg.pushButton_plot_cha.clicked.connect(self.plot_cha)
         self.dlg.pushButton_plot_wt.clicked.connect(self.plot_wt)
         self.dlg.pushButton_plot_gwsw.clicked.connect(self.plot_gwsw)
 
+        self.dlg.groupBox_cha_obd.toggled.connect(self.activate_cha_obd)
+        self.dlg.comboBox_cha_obd_files.currentIndexChanged.connect(self.get_cha_obd_gages)
+
+
         # === Export data to file
-        self.dlg.pushButton_export_sd.clicked.connect(self.export_sd)
+        self.dlg.pushButton_export_cha.clicked.connect(self.export_cha)
         self.dlg.pushButton_export_wt.clicked.connect(self.export_wt)
 
         ## Export mf_recharge to shapefile
@@ -344,7 +350,6 @@ class APEXMOD(object):
         # Export output.std
         self.dlg.pushButton_std_export_wb.clicked.connect(self.export_wb)
         ##
-        self.dlg.checkBox_stream_obd.toggled.connect(self.read_strObd)
         self.dlg.checkBox_wt_obd.toggled.connect(self.read_wtObd)
         # self.dlg.pushButton_refresh.clicked.connect(self.swat_analyze_subbasin)
         self.dlg.pushButton_createMF.clicked.connect(self.createMF)
@@ -369,7 +374,7 @@ class APEXMOD(object):
         self.dlg.tabWidget.currentChanged.connect(self.check_outputs_rt3d)
         self.dlg.tabWidget.currentChanged.connect(self.define_sim_period)
         # ---------------------------------------------------------------------------------------------
-        # 5th tab for RT3D results --------------------------------------------------------------------
+        # NOTE: 5th tab for RT3D results --------------------------------------------------------------------
         ## Export mf_nitrate to shapefile
         self.dlg.horizontalSlider_solute_start_year.valueChanged.connect(self.solute_year_label)
         
@@ -395,7 +400,10 @@ class APEXMOD(object):
         self.dlg.groupBox_salt_channel.toggled.connect(self.activate_salt_channel)
         self.dlg.pushButton_salt_plot.clicked.connect(self.salt_ions_plot)
         self.dlg.pushButton_salt_export.clicked.connect(self.salt_export)
-        
+
+        self.dlg.groupBox_salt_obd.toggled.connect(self.activate_salt_obd)
+        self.dlg.comboBox_salt_obd_files.currentIndexChanged.connect(self.get_salt_obd_gages)
+
         # ---------------------------------------------------------------------------------------------
         # Run
         self.dlg.pushButton_run_apexmf_model.clicked.connect(self.run_apexmf_model)
@@ -421,7 +429,7 @@ class APEXMOD(object):
             self.dlg.pushButton_execute_linking.setEnabled(True)
 
     def test111(self):
-        post_i_str.test111(self)
+        post_i_cha.test111(self)
 
     def ani(self):
         post_iv_gwsw.plot_gwsw_ani(self)
@@ -487,22 +495,22 @@ class APEXMOD(object):
 
             # Check IPRINT option
             if ptcode == 3 or ptcode == 4 or ptcode == 5:  # month
-                self.dlg.comboBox_SD_timeStep.clear()
-                self.dlg.comboBox_SD_timeStep.addItems(['Monthly', 'Annual'])
+                self.dlg.comboBox_cha_time.clear()
+                self.dlg.comboBox_cha_time.addItems(['Monthly', 'Annual'])
                 self.dlg.radioButton_month.setChecked(1)
                 self.dlg.radioButton_month.setEnabled(True)
                 self.dlg.radioButton_day.setEnabled(False)
                 self.dlg.radioButton_year.setEnabled(False)
             elif ptcode == 6 or ptcode == 7 or ptcode == 8 or ptcode == 9:
-                self.dlg.comboBox_SD_timeStep.clear()
-                self.dlg.comboBox_SD_timeStep.addItems(['Daily', 'Monthly', 'Annual'])
+                self.dlg.comboBox_cha_time.clear()
+                self.dlg.comboBox_cha_time.addItems(['Daily', 'Monthly', 'Annual'])
                 self.dlg.radioButton_day.setChecked(1)
                 self.dlg.radioButton_day.setEnabled(True)
                 self.dlg.radioButton_month.setEnabled(False)
                 self.dlg.radioButton_year.setEnabled(False)
             elif ptcode == 0 or ptcode == 1 or ptcode == 2:
-                self.dlg.comboBox_SD_timeStep.clear()
-                self.dlg.comboBox_SD_timeStep.addItems(['Annual'])
+                self.dlg.comboBox_cha_time.clear()
+                self.dlg.comboBox_cha_time.addItems(['Annual'])
                 self.dlg.radioButton_year.setChecked(1)
                 self.dlg.radioButton_year.setEnabled(True)
                 self.dlg.radioButton_day.setEnabled(False)
@@ -512,7 +520,7 @@ class APEXMOD(object):
 
     ### Fourth tab
     def read_strObd(self):
-        post_i_str.read_strObd(self)
+        post_i_cha.read_strObd(self)
 
     def read_wtObd(self):
         post_ii_wt.read_wtObd(self)
@@ -958,7 +966,7 @@ class APEXMOD(object):
             self.riv_opt3_enable()
             # db_functions.DB_Pull_Project(self)
 
-            post_i_str.read_sub_no(self)
+            post_i_cha.read_sub_no(self)
             post_ii_wt.read_grid_id(self)
             retrieve_ProjHistory.wt_act(self)
             self.dlg.raise_()     
@@ -1009,7 +1017,7 @@ class APEXMOD(object):
 
     '''
     # def visualize_SD(self):
-    #   selection = self.dlg.comboBox_SD_timeStep.currentText()
+    #   selection = self.dlg.comboBox_cha_time.currentText()
     #   selection_plotType = self.dlg.comboBox_SD_plotType.currentText()
     #   # checked_streamObs = self.dlg.
     #   SM_output_rch_1.visualize_SD(self, selection, selection_plotType)
@@ -1020,48 +1028,45 @@ class APEXMOD(object):
 
     #     modflow_functions.MF_grid(x_origin, y_origin)
 
-    def plot_sd(self):
-        # Daily output format given
-        if self.dlg.radioButton_day.isChecked() and (self.dlg.comboBox_SD_timeStep.currentText() == "Daily"):
-            post_i_str.sd_plot_daily(self)
-        elif self.dlg.radioButton_day.isChecked() and (self.dlg.comboBox_SD_timeStep.currentText() == "Monthly"):
-            post_i_str.sd_plot_monthly(self)            
-        elif self.dlg.radioButton_day.isChecked() and (self.dlg.comboBox_SD_timeStep.currentText() == "Annual"):
-            post_i_str.sd_plot_annual(self) 
-        # Monthly output format given
-        elif self.dlg.radioButton_month.isChecked() and (self.dlg.comboBox_SD_timeStep.currentText() == "Monthly"):
-            post_i_str.sd_plot_daily(self)
-        elif self.dlg.radioButton_month.isChecked() and (self.dlg.comboBox_SD_timeStep.currentText() == "Annual"):
-            post_i_str.sd_plot_month_to_year(self)
-        # Annual output format given
-        elif self.dlg.radioButton_year.isChecked() and (self.dlg.comboBox_SD_timeStep.currentText() == "Annual"):
-            post_i_str.sd_plot_daily(self)
-        else:
-            msgBox = QMessageBox()
-            msgBox.setText("There was a problem plotting the result!")
-            msgBox.exec_()          
+    # NOTE: 4th tab cha file visualization
 
-    def export_sd(self):
-    # Daily output format given
-        if self.dlg.radioButton_day.isChecked() and (self.dlg.comboBox_SD_timeStep.currentText() == "Daily"):
-            post_i_str.export_sd_daily(self)
-        elif self.dlg.radioButton_day.isChecked() and (self.dlg.comboBox_SD_timeStep.currentText() == "Monthly"):
-            post_i_str.export_sd_monthly(self)          
-        elif self.dlg.radioButton_day.isChecked() and (self.dlg.comboBox_SD_timeStep.currentText() == "Annual"):
-            post_i_str.export_sd_annual(self)   
-        # Monthly output format given
-        elif self.dlg.radioButton_month.isChecked() and (self.dlg.comboBox_SD_timeStep.currentText() == "Monthly"):
-            post_i_str.export_sd_daily(self)
-        elif self.dlg.radioButton_month.isChecked() and (self.dlg.comboBox_SD_timeStep.currentText() == "Annual"):
-            post_i_str.export_sd_mTa(self)
+    def cha_year_label(self):
+        current_year = self.dlg.horizontalSlider_cha_start_year.value()
+        self.dlg.label_cha_year.setText(str(current_year))
 
-        # Annual output format given
-        elif self.dlg.radioButton_year.isChecked() and (self.dlg.comboBox_SD_timeStep.currentText() == "Annual"):
-            post_i_str.export_sd_daily(self)
-        else:
-            msgBox = QMessageBox()
-            msgBox.setText("There was a problem plotting the result!")
-            msgBox.exec_()  
+    def plot_cha(self):
+        if not self.dlg.groupBox_cha_obd.isChecked():
+            post_i_cha.cha_plot(self)
+        if self.dlg.groupBox_cha_obd.isChecked():
+            post_i_cha.cha_sim_obd_plot(self)
+
+        # # Daily output format given
+        # if self.dlg.radioButton_day.isChecked() and (self.dlg.comboBox_cha_time.currentText() == "Daily"):
+        #     post_i_cha.sd_plot_daily(self)
+        # elif self.dlg.radioButton_day.isChecked() and (self.dlg.comboBox_cha_time.currentText() == "Monthly"):
+        #     post_i_cha.sd_plot_monthly(self)            
+        # elif self.dlg.radioButton_day.isChecked() and (self.dlg.comboBox_cha_time.currentText() == "Annual"):
+        #     post_i_cha.sd_plot_annual(self) 
+        # # Monthly output format given
+        # elif self.dlg.radioButton_month.isChecked() and (self.dlg.comboBox_cha_time.currentText() == "Monthly"):
+        #     post_i_cha.sd_plot_daily(self)
+        # elif self.dlg.radioButton_month.isChecked() and (self.dlg.comboBox_cha_time.currentText() == "Annual"):
+        #     post_i_cha.sd_plot_month_to_year(self)
+        # # Annual output format given
+        # elif self.dlg.radioButton_year.isChecked() and (self.dlg.comboBox_cha_time.currentText() == "Annual"):
+        #     post_i_cha.sd_plot_daily(self)
+        # else:
+        #     msgBox = QMessageBox()
+        #     msgBox.setText("There was a problem plotting the result!")
+        #     msgBox.exec_()          
+
+    def export_cha(self):
+        if not self.dlg.groupBox_cha_obd.isChecked():
+            post_i_cha.export_cha(self)
+        if self.dlg.groupBox_cha_obd.isChecked():
+            post_i_cha.export_cha_sims_obds(self)
+    
+
 
     def plot_wt(self):
         if self.dlg.comboBox_hh_time.currentText() == "Daily":
@@ -1467,9 +1472,8 @@ class APEXMOD(object):
         output_dir = APEXMOD_path_dict['MODFLOW']
         output_files = ["amf_MF_recharge.out", "amf_apex_channel.out"]
         if all(os.path.isfile(os.path.join(output_dir, x)) for x in output_files):
-            post_i_str.read_sub_no(self)
-            post_i_str.read_rch_files(self)
-            post_i_str.read_rch_vars(self)
+            post_i_cha.read_sub_no(self)
+            post_i_cha.read_cha_vars(self)
             self.dlg.tabWidget.setTabEnabled(3, True)
         else:
             self.dlg.tabWidget.setTabEnabled(3, False)
@@ -1618,7 +1622,7 @@ class APEXMOD(object):
         self.dlg.tableView_test.setModel(model)
 
 
-# NOTE: Tab5 --- RT related functions tab5
+    # NOTE: Tab5 --- RT related functions tab5
     # Let's combine rt3d / salt here
     def solute_year_label(self):
         current_year = self.dlg.horizontalSlider_solute_start_year.value()
@@ -1766,16 +1770,46 @@ class APEXMOD(object):
     def salt_ions_plot(self):
         # post_ix_solute_hyd.read_salt_ions_channel(self)
         salt_ions_df = self.salt_ions_df
-        if not self.dlg.checkBox_salt_stacked.isChecked():
+        if (
+            not self.dlg.checkBox_salt_stacked.isChecked() and 
+            not self.dlg.groupBox_salt_obd.isChecked()):
             post_ix_solute_hyd.salt_plot(self, salt_ions_df)
-        if self.dlg.checkBox_salt_stacked.isChecked():
+        if (
+            self.dlg.checkBox_salt_stacked.isChecked()
+            ):
             post_ix_solute_hyd.salt_stacked_plot(self, salt_ions_df)
+        if (
+            not self.dlg.checkBox_salt_stacked.isChecked() and
+            self.dlg.groupBox_salt_obd.isChecked()
+            ):
+            post_ix_solute_hyd.salt_sim_obd_plot(self, salt_ions_df)
     
     def salt_export(self):
         salt_ions_df = self.salt_ions_df
-        if not self.dlg.checkBox_salt_stacked.isChecked():
+        if (
+            not self.dlg.checkBox_salt_stacked.isChecked() and 
+            not self.dlg.groupBox_salt_obd.isChecked()):
             post_ix_solute_hyd.export_salt_ion(self, salt_ions_df)
         if self.dlg.checkBox_salt_stacked.isChecked():
             post_ix_solute_hyd.export_salt_mass_conc(self, salt_ions_df)
+        if (
+            not self.dlg.checkBox_salt_stacked.isChecked() and
+            self.dlg.groupBox_salt_obd.isChecked()
+            ):
+            post_ix_solute_hyd.export_salt_sims_obds(self, salt_ions_df)
+    
+    def activate_salt_obd(self):
+        if self.dlg.groupBox_salt_obd.isChecked():
+            post_ix_solute_hyd.read_salt_obd_files(self)
+
+    def get_salt_obd_gages(self):
+        post_ix_solute_hyd.get_salt_obd_gages(self)
+
+    def activate_cha_obd(self):
+        if self.dlg.groupBox_cha_obd.isChecked():
+            post_i_cha.read_cha_obd_files(self)
+
+    def get_cha_obd_gages(self):
+        post_i_cha.get_cha_obd_gages(self)
 
 # ---
