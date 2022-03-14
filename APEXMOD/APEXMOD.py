@@ -60,6 +60,9 @@ from .dialogs import createMFmodel_dialog
 from .dialogs.createMFmodel_dialog import createMFmodelDialog # from folder.file import class
 from .dialogs import help_dialog
 
+from .dialogs import create_rt3d_dlg
+
+
 # import sub functions from pyfolder -----------------------------------#
 from .pyfolder import db_functions
 from .pyfolder import runSim_link
@@ -78,6 +81,7 @@ from .pyfolder import cvt_plotsToVideo
 from .pyfolder import retrieve_ProjHistory
 from .pyfolder import config_sets
 from .pyfolder import load_inputs
+from .pyfolder import write_rt3d
 # from .pyfolder import apexmod_utils
 
 # ----------------------------------------------------------------------#
@@ -245,9 +249,11 @@ class APEXMOD(object):
     def run(self):
         """Run method that performs all the real work"""
         # self.dlg.comboBox1.clicked.connect(self.selectChartType)
+        # NOTE: 1st Tab
         self.dlg.pushButton_newproject.clicked.connect(self.newProject)
         self.dlg.pushButton_TxtInOut.clicked.connect(self.load_apex_model)
 
+        # NOTE: 2nd Tab
         # import org_shps
         self.dlg.pushButton_subbasin_shapefile.clicked.connect(self.load_sub)
         self.dlg.pushButton_river_shapefile.clicked.connect(self.load_riv)
@@ -265,8 +271,20 @@ class APEXMOD(object):
         self.dlg.groupBox_threshold.toggled.connect(self.thres_dhru)
         self.dlg.horizontalSlider_ol_area.valueChanged.connect(self.thres_dhru_value)
 
+        self.dlg.pushButton_mf_obs_points.clicked.connect(self.use_obs_points)
+        self.dlg.pushButton_mf_obs_shapefile.clicked.connect(self.mf_obs_shapefile)
+        self.dlg.pushButton_export_modflow_obs.clicked.connect(self.export_mf_obs)
+        self.dlg.pushButton_createMFmodel.clicked.connect(self.showCreateMFmodel_dialog)
+        self.dlg.pushButton_help.clicked.connect(self.showHelp_dialog)
+        self.dlg.pushButton_MF_grid_shapefile.clicked.connect(self.import_mf_grid)
+        # River
+        self.dlg.pushButton_create_rivs.clicked.connect(self.create_rivs)
+        self.dlg.pushButton_overwrite_RIVpac.clicked.connect(self.owRivPac)
 
-        # Third Tab
+        # Open rt3d ui
+        self.dlg.pushButton_open_rt3d_ui.clicked.connect(self.openRT3Dui)
+
+        # NOTE: 3rd Tab
         self.dlg.checkBox_mf_obs.toggled.connect(self.check_mf_obs)
         self.dlg.radioButton_irrig_act.toggled.connect(self.irr_mf)
         self.dlg.radioButton_irrig_swat_act.toggled.connect(self.irr_swat)
@@ -293,7 +311,7 @@ class APEXMOD(object):
         self.dlg.comboBox_hh_time.addItems(['Daily', 'Monthly', 'Annual'])
         # self.dlg.comboBox_hh_plotType.clear()
         # self.dlg.comboBox_hh_plotType.addItems(['Static Plot', 'Dynamic Plot'])
-        self.dlg.pushButton_create_SM_link.clicked.connect(self.create_apexmf_link)
+        self.dlg.pushButton_create_apexmf_link.clicked.connect(self.create_apexmf_link)
 
         self.dlg.comboBox_colormaps.clear()
         self.dlg.comboBox_colormaps.addItems(
@@ -305,21 +323,16 @@ class APEXMOD(object):
         self.dlg.pushButton_plot_cha.clicked.connect(self.plot_cha)
         self.dlg.pushButton_plot_wt.clicked.connect(self.plot_wt)
         self.dlg.pushButton_plot_gwsw.clicked.connect(self.plot_gwsw)
-
         self.dlg.groupBox_cha_obd.toggled.connect(self.activate_cha_obd)
         self.dlg.comboBox_cha_obd_files.currentIndexChanged.connect(self.get_cha_obd_gages)
-
-
         # === Export data to file
         self.dlg.pushButton_export_cha.clicked.connect(self.export_cha)
         self.dlg.pushButton_export_wt.clicked.connect(self.export_wt)
-
         ## Export mf_recharge to shapefile
         self.dlg.radioButton_mf_results_d.toggled.connect(self.import_mf_dates)
         self.dlg.radioButton_mf_results_m.toggled.connect(self.import_mf_dates)
         self.dlg.radioButton_mf_results_y.toggled.connect(self.import_mf_dates)
         self.dlg.checkBox_head.toggled.connect(self.import_mf_dates)
-
         self.dlg.pushButton_export_mf_results.clicked.connect(self.export_mf_results)
 
         # 4th Read GWSW
@@ -358,16 +371,7 @@ class APEXMOD(object):
         self.dlg.groupBox_add_grid.toggled.connect(self.enable_grid_number)
 
         # From modflow_functions
-        self.dlg.pushButton_mf_obs_points.clicked.connect(self.use_obs_points)
-        self.dlg.pushButton_mf_obs_shapefile.clicked.connect(self.mf_obs_shapefile)
-        self.dlg.pushButton_export_modflow_obs.clicked.connect(self.export_mf_obs)
-        self.dlg.pushButton_createMFmodel.clicked.connect(self.showCreateMFmodel_dialog)
-        self.dlg.pushButton_help.clicked.connect(self.showHelp_dialog)
-        self.dlg.pushButton_MF_grid_shapefile.clicked.connect(self.import_mf_grid)
 
-        # River
-        self.dlg.pushButton_create_rivs.clicked.connect(self.create_rivs)
-        self.dlg.pushButton_overwrite_RIVpac.clicked.connect(self.owRivPac)
 
         # ---------------------------------------------------------------------------------------------
         self.dlg.tabWidget.currentChanged.connect(self.check_outputs)
@@ -380,9 +384,10 @@ class APEXMOD(object):
         
         self.dlg.radioButton_rt3d_d.toggled.connect(self.import_rt3d_salt_dates)
         self.dlg.radioButton_rt3d_m.toggled.connect(self.import_rt3d_salt_dates)
-        self.dlg.radioButton_rt3d_m.toggled.connect(self.create_rt3d_salt_shps)
         self.dlg.radioButton_rt3d_y.toggled.connect(self.import_rt3d_salt_dates)
-        
+        self.dlg.radioButton_rt3d_d.toggled.connect(self.create_rt3d_salt_shps)
+        self.dlg.radioButton_rt3d_m.toggled.connect(self.create_rt3d_salt_shps)
+        self.dlg.radioButton_rt3d_y.toggled.connect(self.create_rt3d_salt_shps)        
         self.dlg.comboBox_solutes.currentIndexChanged.connect(self.import_rt3d_salt_dates)
         self.dlg.comboBox_solutes.currentIndexChanged.connect(self.create_rt3d_salt_shps)
 
@@ -421,6 +426,8 @@ class APEXMOD(object):
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
             pass
+
+    # NOTE: functions start
 
     def activate_execute_linking(self):
         if self.dlg.checkBox_filesPrepared.isChecked():
@@ -975,21 +982,7 @@ class APEXMOD(object):
             # self.tab_enable()
 
     def create_apexmf_link(self):
-        # duration = runSim_link.define_sim_period(self)
-
-        mf_act_st = self.dlg.buttonGroup_mf_active.checkedButton().text()
-        # shallow_act_st = self.dlg.buttonGroup_shallow_active.checkedButton().text()
-        irrig_act_st = self.dlg.buttonGroup_irrig_active.checkedButton().text()
-        irrig_act_swat_st = self.dlg.buttonGroup_irrig_swat_active.checkedButton().text()
-        drain_act_st = self.dlg.buttonGroup_drain_active.checkedButton().text()
-        rt3d_act_st = self.dlg.buttonGroup_RT3D_active.checkedButton().text()
-
-        runSim_link.create_apexmf_link(
-            self, mf_act_st,
-            # shallow_act_st,
-            irrig_act_st,
-            irrig_act_swat_st, drain_act_st, rt3d_act_st)
-
+        runSim_link.write_apexmf_link(self)
 
     def defaultExtent(self):
         modflow_functions.defaultExtent(self)
@@ -1460,7 +1453,7 @@ class APEXMOD(object):
     def run_apexmf_model(self):
         import subprocess
         output_dir = APEXMOD_path_dict['apexmf_model']
-        name = "APEX-MODFLOW.exe"
+        name = "APEX-MODFLOW-RT3D.exe"
         exe_file = os.path.normpath(os.path.join(output_dir, name ))
 
         # os.startfile(File_Physical)
@@ -1655,6 +1648,7 @@ class APEXMOD(object):
         if (
             comp != "solute" and
             self.dlg.radioButton_rt3d_m.isChecked() and
+            self.dlg.radioButton_conc.isChecked() and
             comp != "nitrate" and
             comp != "phosphorus"
             ):
@@ -1662,10 +1656,21 @@ class APEXMOD(object):
         if (
             comp != "solute" and
             self.dlg.radioButton_rt3d_m.isChecked() and
+            self.dlg.radioButton_conc.isChecked() and
             comp == "nitrate" or
             comp == "phosphorus"
             ):
             post_vii_nitrate.create_rt3d_shps(self)
+        if (
+            comp != "solute" and
+            # self.dlg.radioButton_rt3d_m.isChecked() and
+            self.dlg.radioButton_perc.isChecked() and
+            comp == "nitrate" or
+            comp == "phosphorus"
+            ):
+            post_vii_nitrate.create_rt3d_perc_shps(self)
+            post_vii_nitrate.read_perc_dates(self)
+
 
         # if (
         #     self.dlg.groupBox_export_solutes.isChecked() and
@@ -1717,17 +1722,34 @@ class APEXMOD(object):
         if (
             (comp == 'nitrate' or
             comp == 'phosphorus') and
+            self.dlg.radioButton_conc.isChecked() and
             not self.dlg.mGroupBox_rt_avg.isChecked()
             ):
             post_vii_nitrate.export_rt_cno3(self)
         if (
             (comp == 'nitrate' or
             comp == 'phosphorus') and
+            self.dlg.radioButton_conc.isChecked() and
             self.dlg.mGroupBox_rt_avg.isChecked()
             ):
             post_vii_nitrate.get_rt_cno3_avg_m_df(self)
             post_vii_nitrate.export_rt_cno3_avg_m(self)
 
+        if (
+            (comp == 'nitrate' or
+            comp == 'phosphorus') and
+            self.dlg.radioButton_perc.isChecked() and
+            not self.dlg.mGroupBox_rt_avg.isChecked()
+            ):
+            post_vii_nitrate.export_perc_no3(self)
+        # if (
+        #     (comp == 'nitrate' or
+        #     comp == 'phosphorus') and
+        #     self.dlg.radioButton_conc.isChecked() and
+        #     self.dlg.mGroupBox_rt_avg.isChecked()
+        #     ):
+        #     post_vii_nitrate.get_rt_cno3_avg_m_df(self)
+        #     post_vii_nitrate.export_rt_cno3_avg_m(self)
         if (
             (comp == 'sulfate' or
             comp == 'calcium' or
@@ -1813,3 +1835,11 @@ class APEXMOD(object):
         post_i_cha.get_cha_obd_gages(self)
 
 # ---
+
+    # put another ui in main ui
+    def openRT3Dui(self):
+        linking_process.create_rt3d_grid(self)
+        self.rt3d = create_rt3d_dlg.CreateRT3D(self.iface)
+        self.rt3d.show()
+        self.rt3d.exec_()
+

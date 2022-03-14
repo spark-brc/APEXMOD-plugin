@@ -79,6 +79,7 @@ class ObjFns:
         )
         return rsq_
 
+
 class DefineTime:
 
     def __init__(self) -> None:
@@ -98,6 +99,7 @@ class DefineTime:
             edyr = styr + numyr -1
             stdate = datetime.datetime(styr, stmon, 1) + datetime.timedelta(stday - 1)
             eddate = datetime.datetime(edyr, 12, 31)
+            duration_ = (eddate - stdate).days
             stdate_ = stdate.strftime("%m/%d/%Y")
             eddate_ = eddate.strftime("%m/%d/%Y")
-            return stdate_, eddate_
+            return stdate_, eddate_, duration_

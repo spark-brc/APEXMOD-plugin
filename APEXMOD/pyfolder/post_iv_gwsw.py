@@ -854,7 +854,6 @@ def export_gwsw(self):
     startDate = stdate.strftime("%m-%d-%Y")
     msgBox = QMessageBox()
     msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
-
     # Open "amf_MF_gwsw.out" file
     y = ("for", "Positive:", "Negative:", "Daily", "Monthly", "Annual", "Layer,")  # Remove unnecssary lines
     selectedDate = self.dlg.comboBox_gwsw_dates.currentText()
@@ -868,7 +867,6 @@ def export_gwsw(self):
         data1 = [x.split() for x in data] # make each line a list
         sdate = datetime.datetime.strptime(startDate, "%m-%d-%Y") # Change startDate format
         dateList = [(sdate + datetime.timedelta(days = int(i)-1)).strftime("%m-%d-%Y") for i in onlyDate]
-
         # Reverse step
         dateIdx = dateList.index(selectedDate)
         #only
@@ -904,7 +902,6 @@ def export_gwsw(self):
         onlyDate = [x[1] for x in date] 
         #dateList = [(sdate + datetime.timedelta(months = int(i)-1)).strftime("%m-%Y") for i in onlyDate]
         dateList = pd.date_range(startDate, periods = len(onlyDate), freq = 'A').strftime("%Y").tolist()
-
         # Reverse step
         dateIdx = dateList.index(selectedDate)
         #only
@@ -940,7 +937,7 @@ def export_gwsw(self):
     df = f_c.drop(['x_max', 'y_max'], axis=1)
 
     # Add info
-    version = "version 1.3."
+    version = "version 1.4."
     time = datetime.datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
 
     # msgBox = QMessageBox()

@@ -1,12 +1,13 @@
 from builtins import str
 import os
 import os.path
+from PyQt5.QtGui import QIcon
 from qgis.PyQt import QtCore, QtGui, QtSql
 from qgis.PyQt.QtCore import QVariant, QCoreApplication
 import processing
 from processing.tools import dataobjects
 from qgis.core import (
-                    QgsVectorLayer, QgsField, QgsProject, QgsFeatureIterator,
+                    QgsVectorLayer, QgsField, QgsProject, QgsFeatureIterator, QgsVectorFileWriter,
                     QgsFeatureRequest, QgsLayerTreeLayer, QgsExpression, QgsFeature,
                     QgsProcessingFeedback)
 import glob
@@ -14,6 +15,8 @@ import subprocess
 import shutil
 from datetime import datetime
 import csv
+from PyQt5.QtWidgets import QMessageBox
+
 
 
 # deleting existing river_grid
@@ -496,3 +499,31 @@ def copylinkagefiles(self):
         fullname_file = os.path.join(source_dir, f)
         shutil.copy(fullname_file, dest_dir)
 
+def create_rt3d_grid(self):
+    APEXMOD_path_dict = self.dirs_and_paths()
+    # Create apexmf_results tree inside 
+    root = QgsProject.instance().layerTreeRoot()
+    if root.findGroup("RT3D"):
+        rt3d_inputs = root.findGroup("RT3D")
+    else:
+        rt3d_inputs = root.insertGroup(0, "RT3D")
+    input1 = QgsProject.instance().mapLayersByName("mf_grid (MODFLOW)")[0]
+    name = 'rt3d_grid'
+    name_ext = 'rt3d_grid.shp'
+    output_dir = APEXMOD_path_dict['apexmf_shps']
+    if not any(lyr.name() == ('rt3d_grid (RT3D)') for lyr in list(QgsProject.instance().mapLayers().values())):
+        mf_hd_shapfile = os.path.join(output_dir, name_ext)
+        QgsVectorFileWriter.writeAsVectorFormat(
+            input1, mf_hd_shapfile,
+            "utf-8", input1.crs(), "ESRI Shapefile")
+        layer = QgsVectorLayer(mf_hd_shapfile, '{0} ({1})'.format(name, "RT3D"), 'ogr')
+        # Put in the group
+        root = QgsProject.instance().layerTreeRoot()
+        rt3d_inputs = root.findGroup("RT3D")   
+        QgsProject.instance().addMapLayer(layer, False)
+        rt3d_inputs.insertChildNode(0, QgsLayerTreeLayer(layer))
+        msgBox = QMessageBox()
+        msgBox.setWindowIcon(QIcon(':/APEXMOD/pics/am_icon.png'))
+        msgBox.setWindowTitle("Created!")
+        msgBox.setText("'rt3d_grid.shp' file has been created in 'RT3D' group!")
+        msgBox.exec_()

@@ -1,46 +1,38 @@
-# -*- coding: utf-8 -*-
-#******************************************************************************
-#
-# Freewat
-# ---------------------------------------------------------
-# Copyright (C) 2014 - 2015 Iacopo Borsi (iacopo.borsi@tea-group.com)
-#
-# This source is free software; you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free
-# Software Foundation, either version 2 of the License, or (at your option)
-# any later version.
-#
-# This code is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-# details.
-#
-# A copy of the GNU General Public License is available on the World Wide Web
-# at <http://www.gnu.org/licenses/>. You can also obtain it by writing
-# to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
-# MA 02110-1335 USA.
-#
-#******************************************************************************
-from builtins import zip
-from builtins import str
-from builtins import range
+"""
+/***************************************************************************
+ APEXMODDialog
+                                 A QGIS plugin
+ This plugin displays the result of SM simulation
+                             -------------------
+        begin                : 2017-08-02
+        git sha              : $Format:%H$
+        copyright            : (C) 2017 by Seonggyu Park
+        email                : seonggyu.park@brc.tamus.edu
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+"""
 import os
-import os.path
 import posixpath
 import ntpath
 import shutil
 import glob
 import processing
-from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt import QtGui, uic, QtCore, QtSql
 import numpy as np
 # import pandas as pd
 from qgis.core import QgsProject, QgsFeatureRequest
-import distutils.dir_util
 from datetime import datetime
 
-from osgeo import gdal
+# from osgeo import gdal
 from APEXMOD.APEXMOD import *
 from APEXMOD.APEXMOD_dialog import APEXMODDialog
 from APEXMOD.pyfolder import modflow_functions
@@ -224,6 +216,7 @@ class createMFmodelDialog(QDialog, FORM_CLASS):
             swat_group.insertChildNode(0, QgsLayerTreeLayer(layer))
             self.lineEdit_loadDEM.setText(DEM)
             return DEM
+
 
     def loadHK(self):
         writeMF.loadHK(self)

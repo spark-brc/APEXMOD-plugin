@@ -10,170 +10,122 @@ from qgis.core import (
                         QgsLayerTreeLayer)
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMessageBox
+from .apexmod_utils import DefineTime
 
-
-def create_apexmf_link(
-                    self, mf_act_st, irrig_act_st,
-                    irrig_act_swat_st, drain_act_st, rt3d_act_st):
-
-    APEXMOD_path_dict = self.dirs_and_paths() 
-    stdate, eddate = self.define_sim_period()
-    start_month = stdate.strftime("%b")
-    start_day = stdate.strftime("%d")
-    start_year = stdate.strftime("%Y")
-    end_month = eddate.strftime("%b")
-    end_day = eddate.strftime("%d")
-    end_year = eddate.strftime("%Y")
-
-    # Put dates into the gui
-    self.dlg.lineEdit_start_m.setText(start_month)
-    self.dlg.lineEdit_start_d.setText(start_day)
-    self.dlg.lineEdit_start_y.setText(start_year)
-    self.dlg.lineEdit_end_m.setText(end_month)
-    self.dlg.lineEdit_end_d.setText(end_day)
-    self.dlg.lineEdit_end_y.setText(end_year)
-
-    duration = (eddate - stdate).days
-    self.dlg.lineEdit_duration.setText(str(duration))
-
-    # definition of folders
-    inFolder = APEXMOD_path_dict['Table']
-    outFolder = APEXMOD_path_dict['MODFLOW']
-    file_to_change = "apexmf_link.txt"
-
-    infile = os.path.join(inFolder, file_to_change)
-    outfile = os.path.join(outFolder, file_to_change)
-
-    if mf_act_st == 'Yes':
-        mf_active = '1    APEX-MODFLOW is activated\n'
-    elif mf_act_st == 'No':
-        mf_active = '0    APEX-MODFLOW is activated\n'
-    if irrig_act_st == 'Yes':
-        irrig_act = '1    MODFLOW Pumping --> SWAT Irrigation\n'
-    elif irrig_act_st == 'No':
-        irrig_act = '0    MODFLOW Pumping --> SWAT Irrigation\n'
-    if irrig_act_swat_st == 'Yes':
-        irrig_act_swat = '1    SWAT Auto-Irrigation --> MODFLOW Pumping\n'
-    elif irrig_act_swat_st == 'No':
-        irrig_act_swat = '0    SWAT Auto-Irrigation --> MODFLOW Pumping\n'
-    if drain_act_st == 'Yes':
-        drain_act = '1    MODFLOW Drains --> SWAT subbasin channels\n'
-    elif drain_act_st == 'No':
-        drain_act = '0    MODFLOW Drains --> SWAT subbasin channels\n'
-    if rt3d_act_st == 'Yes':
-        rt3d_active = '1    RT3D is active (N and P groundwater reactive transport)\n'
-    elif rt3d_act_st == 'No':
-        rt3d_active = '0    RT3D is active (N and P groundwater reactive transport)\n'
-
-    # # mf_interval
-    # freq_mf = self.dlg.spinBox_freq_mf.value()
-
-    # Read in mf_obs
+def config_sets(self):
+    APEXMOD_path_dict = self.dirs_and_paths()
+    outfd = APEXMOD_path_dict['MODFLOW']
+    flags = []
+    if self.dlg.radioButton_drain_act.isChecked():
+        flags.append(1)
+    if self.dlg.radioButton_drain_inact.isChecked():
+        flags.append(0)
+    if self.dlg.radioButton_ActRT3D.isChecked():
+        flags.append(1)
+    if self.dlg.radioButton_NoRT3D.isChecked():
+        flags.append(0)
     if self.dlg.checkBox_mf_obs.isChecked():
-        mf_obs = '1    Read in observation cells from "modflow.obs"\n'
+        flags.append(1)
     else:
-        mf_obs = '0    Read in observation cells from "modflow.obs"\n'       
+        flags.append(0)
+    with open(os.path.join(outfd, "apexmf_link.txt"), 'w', newline="") as f:
+        f.write("{}\tflag for routing DRAIN cell outflow rates to APEX subareas (DRAIN package must be active)\n".format(flags[0]))
+        f.write("{}\tflag for running RT3D for groundwater reactive transport\n".format(flags[1]))
+        f.write("{}\tflag for reading in MODFLOW observation cells from 'modflow.obs'\n".format(flags[2]))
 
-    # Optional output for APEX-MODFLOW output
-    if self.dlg.checkBox_swat_dp_hru.isChecked():
-        swat_dp = "1    SWAT Deep Percolation (mm) (for each HRU)\n"
+def print_output_options(self):
+    APEXMOD_path_dict = self.dirs_and_paths()
+    outfd = APEXMOD_path_dict['MODFLOW']
+    flags = []
+    if self.dlg.checkBox_apex_dp_sub.isChecked():
+        flags.append(1)
     else:
-        swat_dp = "0    SWAT Deep Percolation (mm) (for each HRU)\n"
+        flags.append(0)
     if self.dlg.checkBox_mf_recharge.isChecked():
-        mf_rch = "1    MODFLOW Recharge (m3/day) (for each MODFLOW Cell)\n"
+        flags.append(1)
     else:
-        mf_rch = "0    MODFLOW Recharge (m3/day) (for each MODFLOW Cell)\n"      
+        flags.append(0)
     if self.dlg.checkBox_channel_depth.isChecked():
-        swat_ch_depth = "1    SWAT Channel Depth (m) (for each SWAT Subbasin)\n"
+        flags.append(1)
     else:
-        swat_ch_depth = "0    SWAT Channel Depth (m) (for each SWAT Subbasin)\n"
+        flags.append(0)
     if self.dlg.checkBox_river_stage.isChecked():
-        mf_riv_stage = "1    MODFLOW River Stage (m) (for each MODFLOW River Cell)\n"
+        flags.append(1)
     else:
-        mf_riv_stage = "0    MODFLOW River Stage (m) (for each MODFLOW River Cell)\n"
+        flags.append(0)
     if self.dlg.checkBox_gw_sw_grid.isChecked():
-        mf_gw_sw = "1    Groundwater/Surface Water Exchange (m3/day) (for each MODFLOW River Cell)\n"
+        flags.append(1)
     else:
-        mf_gw_sw = "0    Groundwater/Surface Water Exchange (m3/day) (for each MODFLOW River Cell)\n"
+        flags.append(0)
     if self.dlg.checkBox_gw_sw_sub.isChecked():
-        swat_gw_sw = "1    Groundwater/Surface Water Exchange (m3/day) (for each SWAT Subbasin)\n"
+        flags.append(1)
     else:
-        swat_gw_sw = "0    Groundwater/Surface Water Exchange (m3/day) (for each SWAT Subbasin)\n"
+        flags.append(0)
     if self.dlg.checkBox_printing_m_a.isChecked():
-        printing_m_a = "1    Print out average values for APEX-MODFLOW and RT3D output variables\n"
+        flags.append(1)
     else:
-        printing_m_a = "0    Print out average values for APEX-MODFLOW and RT3D output variables\n"
+        flags.append(0)
+    with open(os.path.join(outfd, "apexmf_link.txt"), 'a', newline="") as f:
+        f.write("Optional output for APEX-MODFLOW (0=no; 1=yes)\n")
+        f.write("{}\tAPEX Percolation and Recharge (mm) (for each SUB)\n".format(flags[0]))
+        f.write("{}\tMODFLOW Recharge (m3/day) (for each MODFLOW Cell)\n".format(flags[1]))
+        f.write("{}\tAPEX Channel Depth (m) (for each APEX subarea)\n".format(flags[2]))
+        f.write("{}\tMODFLOW River Stage (m) (for each MODFLOW River Cell)\n".format(flags[3]))
+        f.write("{}\tGroundwater/Surface Water Exchange (m3/day) (for each MODFLOW River Cell)\n".format(flags[4]))
+        f.write("{}\tGroundwater/Surface Water Exchange (m3/day) (for each APEX subarea)'\n".format(flags[5]))
+        f.write("{}\tFlag for writing monthly and annual average output for APEX-MODFLOW variables'\n".format(flags[6]))
+
+def print_specific_days(self):
+    APEXMOD_path_dict = self.dirs_and_paths()
+    outfd = APEXMOD_path_dict['MODFLOW']
+    stdate, eddate, sim_period = DefineTime.get_start_end_time(self)
+    # Obtain time step
+    step = self.dlg.spinBox_freq_apexmf_output.value()
 
     lines = []
-    with open(infile, 'r') as f:
-        for line in f:
-            if line.strip().startswith('1    APEX-MODFLOW'):
-                line = mf_active
-            if line.startswith('0    MODFLOW Pumping'):
-                line = irrig_act
-            if line.startswith('0    SWAT Auto-Irrigation'):
-                line = irrig_act_swat
-            if line.startswith('0    MODFLOW Drains'):
-                line = drain_act
-            if line.startswith('0    RT3D is active'):
-                line = rt3d_active
-            # if line.startswith('1    mf_interval'):
-            #     line = str(freq_mf) + "    mf_interval: the number of days between MODFLOW runs\n"           
-            if str(line).startswith('0    Read in observation'):
-                line = str(mf_obs)
-            if str(line).startswith('1    SWAT Deep'):
-                line = swat_dp
-            if str(line).startswith('1    MODFLOW Recharge'):
-                line = mf_rch
-            if str(line).startswith('1    SWAT Channel'):
-                line = swat_ch_depth
-            if str(line).startswith('1    MODFLOW River'):
-                line = mf_riv_stage
-            if line.startswith('1    Groundwater/Surface Water Exchange (m3/day) (for each MODFLOW River Cell)'):
-                line = mf_gw_sw
-            if line.startswith('1    Groundwater/Surface Water Exchange (m3/day) (for each SWAT Subbasin)'):
-                line = swat_gw_sw
-            if line.startswith('1    Print out'):
-                line = printing_m_a
-
-            lines.append(line)
-
-        info = "# == Write APEX-MODFLOW output only on specified days == \n"
-        lines.append(info)
-
-        # Obtain time step
-        sim_period = duration
-        step = self.dlg.spinBox_freq_sm_output.value()
-
-        if step != 1:
-            lines.append(str(int(math.floor(sim_period / step) + 1))+"\n")
-            lines.append(str(1)+"\n")  # force to include the first day
-            for i in range(step, sim_period+1, step):
-                lines.append(str(i)+"\n")
-        else:
-            lines.append(str(int(math.floor(sim_period / step)))+"\n")
-            for i in range(step, sim_period+1, step):
-                lines.append(str(i)+"\n")
-
-        info2 = "# == Groundwater delay == \n"
-        lines.append(info2)
-
-        if self.dlg.radioButton_gw_delay_multi.isChecked():
-            lines.append("1    0 = read in a single value for all HRUs; 1 = read in one value for each HRU\n")
-            input1 = QgsProject.instance().mapLayersByName("gw_delay")[0]
-            data = [i.attributes() for i in input1.getFeatures()]
-            hru_idx = input1.dataProvider().fields().indexFromName("HRU_ID")
-            data_sort = sorted(data, key=operator.itemgetter(hru_idx))
-            for i in data_sort:
-                lines.append(str(i[1]) + "\n")
-        else:
-            gwd = self.dlg.spinBox_gw_delay_single.value()
-            lines.append("0    0 = read in a single value for all HRUs; 1 = read in one value for each HRU\n")
-            lines.append(str(gwd) + "    GW_DELAY : Groundwater delay [days]\n")
-
-    with open(outfile, 'w') as outfile:
+    if step != 1:
+        lines.append(str(int(math.floor(sim_period / step) + 1))+"\n")
+        lines.append(str(1)+"\n")  # force to include the first day
+        for i in range(step, sim_period+1, step):
+            lines.append(str(i)+"\n")
+    else:
+        lines.append(str(int(math.floor(sim_period / step)))+"\n")
+        for i in range(step, sim_period+1, step):
+            lines.append(str(i)+"\n")
+    with open(os.path.join(outfd, "apexmf_link.txt"), 'a', newline="") as f:
+        f.write("# == Write APEX-MODFLOW output only on specified days == \n")
+        # f.write(str(info)+'\n')
         for line in lines:
-            outfile.write(str(line))
+            f.write(str(line))
+
+def groundwater_delay(self):
+    APEXMOD_path_dict = self.dirs_and_paths()
+    outfd = APEXMOD_path_dict['MODFLOW']
+    lines = []
+    info2 = "# == Groundwater delay == \n"
+    lines.append(info2)
+
+    if self.dlg.radioButton_gw_delay_multi.isChecked():
+        lines.append("1\t0 = read in a single value for all SUBs; 1 = read in one value for each subarea\n")
+        input1 = QgsProject.instance().mapLayersByName("gw_delay")[0]
+        data = [i.attributes() for i in input1.getFeatures()]
+        sub_idx = input1.dataProvider().fields().indexFromName("Subbasin")
+        data_sort = sorted(data, key=operator.itemgetter(sub_idx))
+        for i in data_sort:
+            lines.append(str(i[1]) + "\n")
+    else:
+        gwd = self.dlg.spinBox_gw_delay_single.value()
+        lines.append("0\t0 = read in a single value for all SUBs; 1 = read in one value for each subarea\n")
+        lines.append(str(gwd) + "\tGW_DELAY : Groundwater delay [days]\n")
+    with open(os.path.join(outfd, "apexmf_link.txt"), 'a', newline="") as f:
+        for line in lines:
+            f.write(str(line))
+
+def write_apexmf_link(self):
+    config_sets(self)
+    print_output_options(self)
+    print_specific_days(self)
+    groundwater_delay(self)
 
     msgBox = QMessageBox()
     msgBox.setWindowIcon(QIcon(':/APEXMOD/pics/am_icon.png'))

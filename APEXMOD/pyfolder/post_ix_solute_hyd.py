@@ -167,7 +167,7 @@ def solute_plot(self):
 
 def export_solute_df(self):
     # Add info
-    version = "version 1.3."
+    version = "version 1.4."
     time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
     APEXMOD_path_dict = self.dirs_and_paths()
     stdate, eddate = self.define_sim_period()
@@ -306,7 +306,7 @@ def salt_stacked_plot(self, salt_ions_df):
 
 def export_salt_ion(self, salt_ions_df):
     # Add info
-    version = "version 1.3."
+    version = "version 1.4."
     time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
     APEXMOD_path_dict = self.dirs_and_paths()
     outfolder = APEXMOD_path_dict['exported_files']
@@ -348,7 +348,7 @@ def export_salt_ion(self, salt_ions_df):
 
 def export_salt_mass_conc(self, salt_ions_df):
     # Add info
-    version = "version 1.3."
+    version = "version 1.4."
     time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
     APEXMOD_path_dict = self.dirs_and_paths()
     outfolder = APEXMOD_path_dict['exported_files']
@@ -514,7 +514,7 @@ def salt_sim_obd_plot(self, salt_ions_df):
 
 def export_salt_sims_obds(self, salt_ions_df):
     # Add info
-    version = "version 1.3."
+    version = "version 1.4."
     time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
     APEXMOD_path_dict = self.dirs_and_paths()
     outfolder = APEXMOD_path_dict['exported_files']

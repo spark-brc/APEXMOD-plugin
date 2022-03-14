@@ -721,7 +721,7 @@ def modify_wel(self):
     nWel_swat = layer.featureCount()
 
     # Modify an exsiting Wel file
-    version = "version 1.3."
+    version = "version 1.4."
     time = datetime.datetime.now().strftime(' - %m/%d/%y %H:%M:%S -')
 
     if any(inFile.endswith('.wel') for inFile in os.listdir(wd)):
@@ -802,7 +802,7 @@ def gw_delay(self):
 
     # Create apexmf_results tree inside 
     root = QgsProject.instance().layerTreeRoot()
-    input1 = QgsProject.instance().mapLayersByName("hru (SWAT)")[0]
+    input1 = QgsProject.instance().mapLayersByName("sub (APEX)")[0]
 
     # Copy sub shapefile to be under "p from mf"
     name = "gw_delay"
@@ -827,7 +827,9 @@ def gw_delay(self):
 
     input2 = QgsProject.instance().mapLayersByName("gw_delay")[0]
     fields = input2.dataProvider()
-    fdname = [fields.indexFromName(field.name()) for field in fields.fields() if not field.name() == 'HRU_ID']
+
+
+    fdname = [fields.fields().indexFromName(field.name()) for field in fields.fields() if not field.name() == 'Subbasin']
     fields.deleteAttributes(fdname)
     input2.updateFields()
     gwd = QgsField('gw_delay',  QVariant.Int)

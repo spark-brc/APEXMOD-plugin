@@ -10,6 +10,7 @@ from qgis.core import (
 from qgis.PyQt import QtCore, QtGui, QtSql
 import datetime
 import pandas as pd
+import numpy as np
 import os
 import glob
 from PyQt5.QtGui import QIcon, QColor, QImage, QPainter, QPen, QFont
@@ -20,7 +21,6 @@ import processing
 from qgis.gui import QgsMapCanvas
 import glob
 from PIL import Image
-
 
 def comps_dic():
     comps_dic = {
@@ -149,6 +149,179 @@ def create_rt3d_shps(self):
         msgBox.setWindowTitle("Created!")
         msgBox.setText("'{}' layer has been created in 'apexmf_results' group!".format(name))
         msgBox.exec_()
+
+# NOTE: percolation in sub
+def create_rt3d_perc_shps(self):
+    APEXMOD_path_dict = self.dirs_and_paths()
+    stdate, eddate = self.define_sim_period()
+    wd = APEXMOD_path_dict['MODFLOW']
+    startDate = stdate.strftime("%m-%d-%Y")
+    # Create apexmf_results tree inside 
+    root = QgsProject.instance().layerTreeRoot()
+    if root.findGroup("apexmf_results"):
+        apexmf_results = root.findGroup("apexmf_results")
+    else:
+        apexmf_results = root.insertGroup(0, "apexmf_results")
+    input1 = QgsProject.instance().mapLayersByName("sub (APEX)")[0]
+    provider = input1.dataProvider()
+    comp = self.dlg.comboBox_solutes.currentText().replace('(', '').replace(')', '').strip().split()[1].lower()
+    if self.dlg.radioButton_rt3d_d.isChecked():
+        name = "rt3d_{}_perc_day".format(comp)
+    elif self.dlg.radioButton_rt3d_m.isChecked():
+        name = "rt3d_{}_perc_mon".format(comp)
+    elif self.dlg.radioButton_rt3d_y.isChecked():
+        name = "rt3d_{}_perc_year".format(comp)
+    name_ext = name + ".shp"
+    output_dir = APEXMOD_path_dict['apexmf_shps']
+    # Check if there is an exsting mf_head shapefile
+    if not any(lyr.name() == (name) for lyr in list(QgsProject.instance().mapLayers().values())):
+        mf_hd_shapfile = os.path.join(output_dir, name_ext)
+        QgsVectorFileWriter.writeAsVectorFormat(
+            input1, mf_hd_shapfile,
+            "utf-8", input1.crs(), "ESRI Shapefile")
+        layer = QgsVectorLayer(mf_hd_shapfile, '{0}'.format(name), 'ogr')
+        # Put in the group
+        root = QgsProject.instance().layerTreeRoot()
+        apexmf_results = root.findGroup("apexmf_results")
+        QgsProject.instance().addMapLayer(layer, False)
+        apexmf_results.insertChildNode(0, QgsLayerTreeLayer(layer))
+
+        input2 = QgsProject.instance().mapLayersByName(name)[0]
+        fields = input2.dataProvider()
+        fdname = [
+                    fields.fields().indexFromName(field.name()) for field in fields.fields()
+                    if not field.name() == 'Subbasin']
+        fields.deleteAttributes(fdname)
+        input2.updateFields()
+        msgBox = QMessageBox()
+        msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
+        msgBox.setWindowTitle("Created!")
+        msgBox.setText("'{}' layer has been created in 'apexmf_results' group!".format(name))
+        msgBox.exec_()
+
+def read_perc_dates(self):
+    APEXMOD_path_dict = self.dirs_and_paths()
+    stdate, eddate = self.define_sim_period()
+    self.layer = QgsProject.instance().mapLayersByName("sub (APEX)")[0]
+    tot_feats = self.layer.featureCount()
+    wd = APEXMOD_path_dict['MODFLOW']
+    infile = "amf_apex_percno3.out"
+    y = ("APEX", "Subarea,", "NO3")
+    with open(os.path.join(wd, infile), "r") as f:
+        data1 = [x.split()[2].strip() for x in f if x.strip() and not x.strip().startswith(y)]
+    date_length = int(len(data1)/75)
+    temp_df = pd.DataFrame({'temp': [i*0 for i in range(0, date_length)]})
+    temp_df.index = pd.date_range(stdate, periods=date_length)
+    dateList = temp_df.index.strftime("%m-%d-%Y").tolist()
+    if self.dlg.radioButton_rt3d_m.isChecked(): 
+        temp_df = temp_df.resample('M').mean()
+        dateList = temp_df.index.strftime("%m-%d-%Y").tolist()
+    elif self.dlg.radioButton_rt3d_y.isChecked(): 
+        temp_df = temp_df.resample('A').mean()
+        dateList = temp_df.index.strftime("%m-%d-%Y").tolist()
+    
+    self.dlg.comboBox_rt_results_sdate.clear()
+    self.dlg.comboBox_rt_results_sdate.addItems(dateList)
+    self.dlg.comboBox_rt_results_edate.clear()
+    self.dlg.comboBox_rt_results_edate.addItems(dateList)
+    self.dlg.comboBox_rt_results_edate.setCurrentIndex(len(dateList)-1)
+
+
+
+
+
+def get_percno3_df(self):
+    APEXMOD_path_dict = self.dirs_and_paths()
+    stdate, eddate = self.define_sim_period()
+    self.layer = QgsProject.instance().mapLayersByName("sub (APEX)")[0]
+    tot_feats = self.layer.featureCount()
+    wd = APEXMOD_path_dict['MODFLOW']
+    infile = "amf_apex_percno3.out"
+    y = ("APEX", "Subarea,", "NO3")
+    with open(os.path.join(wd, infile), "r") as f:
+        data = [x.strip() for x in f if x.strip() and not x.strip().startswith(y)]
+    data1 = [x.split()[2] for x in data]
+    data_array = np.reshape(data1, (tot_feats, int(len(data1)/tot_feats)), order='F')
+    column_names = ["{:03d}".format(int(x.split()[0])) for x in data[0:tot_feats]]
+    df_ = pd.DataFrame(data_array.T, columns=column_names)
+    df_.sort_index(axis=1, inplace=True)
+    df_.index = pd.date_range(stdate, periods=len(df_))
+    df_ = df_.astype(float)
+    # dateList = df_.index.strftime("%m-%d-%Y").tolist()
+    if self.dlg.radioButton_rt3d_m.isChecked(): 
+        df_ = df_.resample('M').mean()
+        # dateList = df_.index.strftime("%b-%Y").tolist()
+    elif self.dlg.radioButton_rt3d_y.isChecked(): 
+        df_ = df_.resample('A').mean()
+        # dateList = df_.index.strftime("%Y").tolist()
+
+    return df_
+
+
+def export_perc_no3(self):
+    df = get_percno3_df(self)
+
+    
+    selectedSdate = self.dlg.comboBox_rt_results_sdate.currentText()
+    selectedEdate = self.dlg.comboBox_rt_results_edate.currentText()
+
+    df = df[selectedSdate:selectedEdate]
+
+    comp = self.dlg.comboBox_solutes.currentText().replace('(', '').replace(')', '').strip().split()[1].lower()
+    if self.dlg.radioButton_rt3d_d.isChecked():
+        name = "rt3d_{}_perc_day".format(comp)
+    elif self.dlg.radioButton_rt3d_m.isChecked():
+        name = "rt3d_{}_perc_mon".format(comp)
+    elif self.dlg.radioButton_rt3d_y.isChecked():
+        name = "rt3d_{}_perc_year".format(comp)
+    input1 = QgsProject.instance().mapLayersByName(name)[0]
+
+
+    per = 0
+    self.dlg.progressBar_mf_results.setValue(0)
+    for selectedDate in df.index.tolist():
+        QCoreApplication.processEvents()
+        selectedDate = selectedDate.strftime("%m-%d-%Y")
+
+        provider = input1.dataProvider()
+        if provider.fields().indexFromName(selectedDate) == -1:
+            field = QgsField(selectedDate, QVariant.Double, 'double', 20, 5)
+            provider.addAttributes([field])
+            input1.updateFields()
+        mf_hds_idx = provider.fields().indexFromName(selectedDate)
+        
+        tot_feats = input1.featureCount()
+        count = 0        
+        # Get features (Find out a way to change attribute values using another field)
+        feats = input1.getFeatures()
+        input1.startEditing()
+        # add row number
+        perc_list =  df.loc[selectedDate].tolist()
+        for f, mf_hd in zip(feats, perc_list):
+            input1.changeAttributeValue(f.id(), mf_hds_idx, mf_hd)
+            count += 1
+            provalue = round(count/tot_feats*100)
+            self.dlg.progressBar_rt.setValue(provalue)
+            QCoreApplication.processEvents()
+        input1.commitChanges()
+        QCoreApplication.processEvents()
+
+        # Update progress bar 
+        per += 1
+        progress = round((per / len(df.index.tolist())) *100)
+        self.dlg.progressBar_rt_results.setValue(progress)
+        QCoreApplication.processEvents()
+        self.dlg.raise_()
+
+    msgBox = QMessageBox()
+    msgBox.setWindowIcon(QtGui.QIcon(':/APEXMOD/pics/am_icon.png'))
+    msgBox.setWindowTitle("Exported!")
+    msgBox.setText("rt_nitrate_perc results were exported successfully!")
+    msgBox.exec_()
+
+
+
+
 
 
 def read_mf_nitrate_dates(self):
@@ -590,17 +763,24 @@ def export_rt_cno3_avg_m(self):
     msgBox.setText("rt_nitrate_m results were exported successfully!")
     msgBox.exec_()
 
-
 def read_vector_maps(self):
     comp_dic, comps = comps_dic()
     layers = [lyr.name() for lyr in list(QgsProject.instance().mapLayers().values())]
+    perc_layers = [
+        "rt3d_nitrate_perc_day",
+        "rt3d_nitrate_perc_mon",
+        "rt3d_nitrate_perc_year",
+        "rt3d_phosphorus_perc_day",
+        "rt3d_phosphorus_perc_mon",
+        "rt3d_phosphorus_perc_year",
+    ]
     available_layers = [
                 'mf_head_mon',
                 'mf_head_yr',
                 'mf_recharge_mon',
                 'mf_recharge_yr',
                 ]
-    available_layers = available_layers + comps
+    available_layers = available_layers + perc_layers+ comps 
 
     self.dlg.comboBox_vector_lyrs.clear()
     self.dlg.comboBox_vector_lyrs.addItems(available_layers)

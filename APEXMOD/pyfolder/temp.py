@@ -2,46 +2,30 @@ import os
 import pandas as pd
 import glob
 import datetime
+import numpy as np
 
-# if self.dlg.checkBox_head.isChecked() and self.dlg.radioButton_mf_results_m.isChecked():
+tot_feats = 75
 
-
-comps_dic = {
-    'NO3': 'Nitrate',
-    'P': 'Phosphorus',
-    'SO4': 'Sulfate',
-    'Ca2': 'Calcium',
-    'Mg2': 'Magnesium',
-    'Na': 'Sodium',
-    'K': 'Potassium',
-    'Cl': 'Chloride',
-    'CO3': 'Carbonate',
-    'HCO3': 'Bicarbonate'}
-
-
-comps =  [i.lower() for i in comps_dic.values()]
-new_comps = []
-for i in comps:
-    if i == 'nitrate' or i == 'phosphorus':
-        i = 'rt3d_' + i
-    else:
-        i = 'salt_' + i
-    new_comps.append(i)
-suffixs = ['_mon', '_yr', '_avg_mon']
-
-new_comps2 = []
-for comp in new_comps:
-    for suf in suffixs:
-        new_comps2.append(comp + suf)
-
-
-
-
-print(new_comps2)
-
-
-
-# #if __name__ == "__main__":
-# wd = "D:/Projects/Tools/APEXMODs/APEXMOD_salt_test/price_apexmf_salt/APEX-MODFLOW/MODFLOW"
-# get_dataset(wd)
-# print('test')
+wd = "D:\\Workshops\\2022_test\\model02\\APEX-MODFLOW\\MODFLOW"
+infile = "amf_apex_percno3.out"
+y = ("APEX", "Subarea,", "NO3")
+stdate = '1/1/1987'
+with open(os.path.join(wd, infile), "r") as f:
+    data = [x.strip() for x in f if x.strip() and not x.strip().startswith(y)]
+data1 = [x.split()[2] for x in data]
+data_array = np.reshape(data1, (tot_feats, int(len(data1)/tot_feats)), order='F')
+column_names = ["{:03d}".format(int(x.split()[0])) for x in data[0:tot_feats]]
+df_ = pd.DataFrame(data_array.T, columns=column_names)
+df_.sort_index(axis=1, inplace=True)
+df_.index = pd.date_range(stdate, periods=len(df_))
+df_ = df_.astype(float)
+df_ = df_.resample('M').mean()
+print(df_)
+# # dateList = df_.index.strftime("%m-%d-%Y").tolist()
+# # if self.dlg.radioButton_rt3d_m.isChecked(): 
+# df_ = df_.resample('M').mean()
+#     # dateList = df_.index.strftime("%b-%Y").tolist()
+# # elif self.dlg.radioButton_rt3d_y.isChecked(): 
+#     # df_ = df_.resample('A').mean()
+#     # dateList = df_.index.strftime("%Y").tolist()
+# print(df_)

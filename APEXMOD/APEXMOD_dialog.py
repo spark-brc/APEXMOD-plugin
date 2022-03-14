@@ -7,8 +7,8 @@
                              -------------------
         begin                : 2017-08-02
         git sha              : $Format:%H$
-        copyright            : (C) 2017 by Danny
-        email                : envpsg@colostate.edu
+        copyright            : (C) 2017 by Seonggyu Park
+        email                : seonggyu.park@brc.tamus.edu
  ***************************************************************************/
 
 /***************************************************************************

@@ -20,6 +20,7 @@ import processing
 from qgis.gui import QgsMapCanvas
 import glob
 from PIL import Image
+import pandas as pd
 
 
 def read_salt_dates(self):

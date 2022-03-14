@@ -57,7 +57,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>4</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideNone</enum>
@@ -466,9 +466,9 @@ p, li { white-space: pre-wrap; }
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-154</y>
             <width>606</width>
-            <height>511</height>
+            <height>575</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -1117,7 +1117,7 @@ p, li { white-space: pre-wrap; }
                    <bool>true</bool>
                   </property>
                   <property name="title">
-                   <string>Option 3: MODFLOW model (✖) |  MODFLOW grid shapefile (✖)  |  RT3D input files (✖)</string>
+                   <string>Option 3: MODFLOW model (✖) |  MODFLOW grid shapefile (✖)</string>
                   </property>
                   <property name="flat">
                    <bool>true</bool>
@@ -1186,58 +1186,6 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item>
-                    <widget class="Line" name="line_6">
-                     <property name="frameShadow">
-                      <enum>QFrame::Plain</enum>
-                     </property>
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_51">
-                     <property name="spacing">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="label_26">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="text">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Webdings'; font-size:12pt;&quot;&gt;Ï&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="pushButton_2">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>200</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string>Write RT3D input files</string>
-                       </property>
-                       <property name="checkable">
-                        <bool>true</bool>
-                       </property>
-                       <property name="checked">
-                        <bool>false</bool>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
                     <spacer name="horizontalSpacer_3">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
@@ -1254,7 +1202,6 @@ p, li { white-space: pre-wrap; }
                   <zorder>pushButton_createMFmodel</zorder>
                   <zorder>horizontalSpacer_2</zorder>
                   <zorder>horizontalSpacer_3</zorder>
-                  <zorder>line_6</zorder>
                  </widget>
                 </item>
                </layout>
@@ -1947,6 +1894,81 @@ Create &quot;river_grid&quot; shapefile</string>
               </item>
              </layout>
             </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_51">
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QGroupBox" name="groupBox_14">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="title">
+                <string>Create RT3D Model Inputs</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_20">
+                <item>
+                 <widget class="QPushButton" name="pushButton_open_rt3d_ui">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Open RT3D UI</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox_16">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="title">
+                <string>Create Salinity Model Inputs</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_31">
+                <item>
+                 <widget class="QPushButton" name="pushButton">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Open Salinity UI</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item>
             <spacer name="verticalSpacer_7">
@@ -3049,6 +3071,9 @@ p, li { white-space: pre-wrap; }
                     <property name="text">
                      <string>Yes</string>
                     </property>
+                    <property name="checked">
+                     <bool>false</bool>
+                    </property>
                     <attribute name="buttonGroup">
                      <string notr="true">buttonGroup_drain_active</string>
                     </attribute>
@@ -3077,7 +3102,7 @@ p, li { white-space: pre-wrap; }
                    </widget>
                   </item>
                   <item row="0" column="0">
-                   <widget class="QRadioButton" name="radioButton_RunSM">
+                   <widget class="QRadioButton" name="radioButton_run_apexmf">
                     <property name="font">
                      <font>
                       <weight>50</weight>
@@ -3128,7 +3153,7 @@ p, li { white-space: pre-wrap; }
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QRadioButton" name="radioButton_RunS">
+                   <widget class="QRadioButton" name="radioButton_run_apex">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -3745,7 +3770,7 @@ p, li { white-space: pre-wrap; }
                <number>6</number>
               </property>
               <item>
-               <widget class="QCheckBox" name="checkBox_swat_dp_hru">
+               <widget class="QCheckBox" name="checkBox_apex_dp_sub">
                 <property name="font">
                  <font>
                   <pointsize>8</pointsize>
@@ -3867,7 +3892,7 @@ p, li { white-space: pre-wrap; }
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QSpinBox" name="spinBox_freq_sm_output">
+                 <widget class="QSpinBox" name="spinBox_freq_apexmf_output">
                   <property name="maximumSize">
                    <size>
                     <width>80</width>
@@ -3932,7 +3957,7 @@ p, li { white-space: pre-wrap; }
           <number>0</number>
          </property>
          <item>
-          <widget class="QPushButton" name="pushButton_create_SM_link">
+          <widget class="QPushButton" name="pushButton_create_apexmf_link">
            <property name="enabled">
             <bool>true</bool>
            </property>
@@ -6572,9 +6597,9 @@ APEX-MODFLOW Simulation</string>
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>623</width>
-            <height>628</height>
+            <y>-97</y>
+            <width>607</width>
+            <height>708</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_57">
@@ -6929,6 +6954,240 @@ APEX-MODFLOW Simulation</string>
             </widget>
            </item>
            <item>
+            <widget class="QGroupBox" name="groupBox_17">
+             <property name="title">
+              <string>Solute Percolation (kg/ha)</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_55">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_55">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_2">
+                  <property name="text">
+                   <string>Select Solute:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="comboBox">
+                  <property name="minimumSize">
+                   <size>
+                    <width>130</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_8">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="Line" name="line_6">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_7">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_6">
+                  <property name="text">
+                   <string>Time Step:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="radioButton">
+                  <property name="text">
+                   <string>Day</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="radioButton_2">
+                  <property name="text">
+                   <string>Month</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="radioButton_3">
+                  <property name="text">
+                   <string>Year</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_83">
+                <property name="topMargin">
+                 <number>10</number>
+                </property>
+                <item>
+                 <widget class="QGroupBox" name="groupBox_18">
+                  <property name="title">
+                   <string>Duration</string>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_84">
+                   <item>
+                    <widget class="QComboBox" name="comboBox_2"/>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_9">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="text">
+                      <string>to</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="comboBox_3"/>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBox_19">
+                  <property name="title">
+                   <string>Average Monthly</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_7">
+                   <item row="1" column="5">
+                    <widget class="QCheckBox" name="checkBox_13">
+                     <property name="text">
+                      <string>Dec</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="5">
+                    <widget class="QCheckBox" name="checkBox_12">
+                     <property name="text">
+                      <string>Jun</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="4">
+                    <widget class="QCheckBox" name="checkBox_11">
+                     <property name="text">
+                      <string>Nov</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="4">
+                    <widget class="QCheckBox" name="checkBox_6">
+                     <property name="text">
+                      <string>May</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="3">
+                    <widget class="QCheckBox" name="checkBox_10">
+                     <property name="text">
+                      <string>Oct</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="3">
+                    <widget class="QCheckBox" name="checkBox_5">
+                     <property name="text">
+                      <string>Apr</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="2">
+                    <widget class="QCheckBox" name="checkBox_9">
+                     <property name="text">
+                      <string>Sep</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="2">
+                    <widget class="QCheckBox" name="checkBox_4">
+                     <property name="text">
+                      <string>Mar</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QCheckBox" name="checkBox_8">
+                     <property name="text">
+                      <string>Aug</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QCheckBox" name="checkBox_7">
+                     <property name="text">
+                      <string>Jul</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QCheckBox" name="checkBox_3">
+                     <property name="text">
+                      <string>Feb</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QCheckBox" name="checkBox_2">
+                     <property name="text">
+                      <string>Jan</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <widget class="QGroupBox" name="groupBox_export_solutes">
              <property name="font">
               <font>
@@ -6938,7 +7197,7 @@ APEX-MODFLOW Simulation</string>
               </font>
              </property>
              <property name="title">
-              <string>Export Solute Transport Results from RT3D and Salt</string>
+              <string>Solute Percolation (kg/ha) and Concentration in Aquifer (mg/L)</string>
              </property>
              <property name="checkable">
               <bool>true</bool>
@@ -6953,7 +7212,13 @@ APEX-MODFLOW Simulation</string>
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QLabel" name="label_83">
+                 <widget class="QRadioButton" name="radioButton_perc">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="font">
                    <font>
                     <weight>50</weight>
@@ -6961,7 +7226,57 @@ APEX-MODFLOW Simulation</string>
                    </font>
                   </property>
                   <property name="text">
-                   <string>Select Solute:</string>
+                   <string>Perc.</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                  <attribute name="buttonGroup">
+                   <string notr="true">buttonGroup_perc_conc</string>
+                  </attribute>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="radioButton_conc">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Conc.</string>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                  <attribute name="buttonGroup">
+                   <string notr="true">buttonGroup_perc_conc</string>
+                  </attribute>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_83">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Solute:</string>
                   </property>
                  </widget>
                 </item>
@@ -6969,24 +7284,11 @@ APEX-MODFLOW Simulation</string>
                  <widget class="QComboBox" name="comboBox_solutes">
                   <property name="minimumSize">
                    <size>
-                    <width>130</width>
+                    <width>100</width>
                     <height>0</height>
                    </size>
                   </property>
                  </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_23">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
                 </item>
                 <item>
                  <widget class="Line" name="line_22">
@@ -6996,20 +7298,13 @@ APEX-MODFLOW Simulation</string>
                  </widget>
                 </item>
                 <item>
-                 <spacer name="horizontalSpacer_24">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
                  <widget class="QLabel" name="label_84">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="font">
                    <font>
                     <weight>50</weight>
@@ -7044,37 +7339,11 @@ APEX-MODFLOW Simulation</string>
                  </widget>
                 </item>
                 <item>
-                 <spacer name="horizontalSpacer_25">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
                  <widget class="Line" name="line_23">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
                   </property>
                  </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_26">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
                 </item>
                 <item>
                  <widget class="QLabel" name="label_85">
@@ -8159,7 +8428,7 @@ APEX-MODFLOW Simulation</string>
           </font>
          </property>
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;- Version: 1.3-&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;- Version: 1.4-&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -8187,18 +8456,18 @@ APEX-MODFLOW Simulation</string>
  </customwidgets>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_irrig_active"/>
-  <buttongroup name="buttonGroup_irrig_swat_active"/>
-  <buttongroup name="buttonGroup_str_obd"/>
+  <buttongroup name="buttonGroup_drain_active"/>
+  <buttongroup name="buttonGroup_cha_obd"/>
+  <buttongroup name="buttonGroup_gw_delay"/>
   <buttongroup name="buttonGroup_salt_ions"/>
   <buttongroup name="buttonGroup_head_recharge"/>
-  <buttongroup name="buttonGroup_gw_delay"/>
-  <buttongroup name="buttonGroup_RT3D_active"/>
-  <buttongroup name="buttonGroup_wt_obd"/>
-  <buttongroup name="buttonGroup_drain_active"/>
-  <buttongroup name="buttonGroup_mf_swat"/>
   <buttongroup name="buttonGroup_mf_active"/>
   <buttongroup name="buttonGroup_salt_obd"/>
-  <buttongroup name="buttonGroup_cha_obd"/>
+  <buttongroup name="buttonGroup_RT3D_active"/>
+  <buttongroup name="buttonGroup_irrig_swat_active"/>
+  <buttongroup name="buttonGroup_wt_obd"/>
+  <buttongroup name="buttonGroup_irrig_active"/>
+  <buttongroup name="buttonGroup_mf_swat"/>
+  <buttongroup name="buttonGroup_perc_conc"/>
  </buttongroups>
 </ui>

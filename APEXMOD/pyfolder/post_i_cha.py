@@ -13,7 +13,7 @@ import os
 import pandas as pd
 from datetime import datetime
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMessageBox
+
 from PyQt5.QtWidgets import QSlider, QMessageBox
 
 from .apexmod_utils import DefineTime, ObjFns
@@ -96,7 +96,7 @@ def read_cha_obd_files(self):
 def get_cha_sims_obds(self):
     APEXMOD_path_dict = self.dirs_and_paths()
     wd = APEXMOD_path_dict['apexmf_model']
-    startDate, endDate = DefineTime.get_start_end_time(self)
+    startDate, endDate, duration = DefineTime.get_start_end_time(self)
     current_year = self.dlg.horizontalSlider_cha_start_year.value()
 
     # sims first
@@ -183,7 +183,7 @@ def cha_sim_obd_plot(self):
 
 
 def cha_plot(self):
-    startDate, endDate = DefineTime.get_start_end_time(self)
+    startDate, endDate, duration = DefineTime.get_start_end_time(self)
     current_year = self.dlg.horizontalSlider_cha_start_year.value()
     sub_no = self.dlg.comboBox_cha_sub_no.currentText()
     cha_var = self.dlg.comboBox_cha_vars.currentText()
@@ -240,10 +240,10 @@ Export data only selected
 """
 def export_cha(self):
     # Add info
-    version = "version 1.3."
+    version = "version 1.4."
     time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
     APEXMOD_path_dict = self.dirs_and_paths()
-    startDate, endDate = DefineTime.get_start_end_time(self)
+    startDate, endDate, duration = DefineTime.get_start_end_time(self)
     outfolder = APEXMOD_path_dict['exported_files']
     current_year = self.dlg.horizontalSlider_cha_start_year.value()
     sub_no = self.dlg.comboBox_cha_sub_no.currentText()
@@ -281,7 +281,7 @@ def export_cha(self):
 
 def export_cha_sims_obds(self):
     # Add info
-    version = "version 1.3."
+    version = "version 1.4."
     time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
     APEXMOD_path_dict = self.dirs_and_paths()
     outfolder = APEXMOD_path_dict['exported_files']
@@ -329,7 +329,7 @@ def export_sd_daily(self):
     outletSubNum = int(self.dlg.comboBox_cha_sub_no.currentText())
 
     # Add info
-    version = "version 1.3."
+    version = "version 1.4."
     time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
 
     if self.dlg.checkBox_stream_obd.isChecked():
@@ -492,7 +492,7 @@ def export_sd_monthly(self):
     outletSubNum = int(self.dlg.comboBox_cha_sub_no.currentText())
 
     # Add info
-    version = "version 1.3."
+    version = "version 1.4."
     time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
     if self.dlg.checkBox_stream_obd.isChecked():
         strObd = pd.read_csv(
@@ -610,7 +610,7 @@ def export_sd_mTa(self):
     outletSubNum = int(self.dlg.comboBox_cha_sub_no.currentText())
 
     # Add info
-    version = "version 1.3."
+    version = "version 1.4."
     time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
 
     if self.dlg.checkBox_stream_obd.isChecked():
@@ -739,7 +739,7 @@ def export_sd_annual(self):
     outletSubNum = int(self.dlg.comboBox_cha_sub_no.currentText())
 
     # Add info
-    version = "version 1.3."
+    version = "version 1.4."
     time = datetime.now().strftime('- %m/%d/%y %H:%M:%S -')
 
     if self.dlg.checkBox_stream_obd.isChecked():

@@ -5,6 +5,7 @@
 		}
 	],
 	"settings": {
-		"python.pythonPath": "C:\\OSGEO4~1\\apps\\Python37\\python.exe"
+		"python.pythonPath": "C:\\OSGEO4~1\\apps\\Python37\\python.exe",
+		"esbonio.server.enabled": true
 	}
 }
