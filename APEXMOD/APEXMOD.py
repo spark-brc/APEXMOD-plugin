@@ -1222,7 +1222,7 @@ class APEXMOD(object):
         exported_files = os.path.normpath(Projectfolder + "/" + Project_Name + "/" + "exported_files")
         scn_folder = os.path.normpath(Projectfolder + "/" + Project_Name + "/" + "Scenarios")
         mf_model = os.path.normpath(Projectfolder + "/" + Project_Name + "/" + "APEX-MODFLOW/MODFLOW")
-        salt_foler = os.path.normpath(Projectfolder + "/" + Project_Name + "/" + "APEX-MODFLOW/SALINITY")
+        salt_folder = os.path.normpath(Projectfolder + "/" + Project_Name + "/" + "APEX-MODFLOW/SALINITY")
 
         APEXMOD_path_dict = {
                                 'org_shps': org_shps,
@@ -1233,7 +1233,7 @@ class APEXMOD(object):
                                 'exported_files': exported_files,
                                 'Scenarios': scn_folder,
                                 'MODFLOW': mf_model,
-                                'SALINITY': salt_foler
+                                'SALINITY': salt_folder
                                 }
         return APEXMOD_path_dict
 
@@ -1453,7 +1453,7 @@ class APEXMOD(object):
     def run_apexmf_model(self):
         import subprocess
         output_dir = APEXMOD_path_dict['apexmf_model']
-        name = "APEX-MODFLOW-RT3D.exe"
+        name = "apexmf1.1_64rel.exe"
         exe_file = os.path.normpath(os.path.join(output_dir, name ))
 
         # os.startfile(File_Physical)

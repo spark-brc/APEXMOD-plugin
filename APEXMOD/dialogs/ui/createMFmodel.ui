@@ -30,7 +30,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-394</y>
         <width>567</width>
         <height>925</height>
        </rect>
@@ -2198,7 +2198,7 @@ MODFLOW model</string>
  <connections/>
  <buttongroups>
   <buttongroup name="buttonGroup"/>
-  <buttongroup name="buttonGroup_initialH"/>
   <buttongroup name="buttonGroup_aq_thic"/>
+  <buttongroup name="buttonGroup_initialH"/>
  </buttongroups>
 </ui>

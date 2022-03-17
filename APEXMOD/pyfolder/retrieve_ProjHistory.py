@@ -106,7 +106,7 @@ def wt_act(self):
     APEXMOD_path_dict = self.dirs_and_paths()
     # Define folders and files
     apexmf_model = APEXMOD_path_dict['MODFLOW']
-    # retrive apexmf_out_MF_obs
+    # retrive amf_MODFLOW_obs_head
     if os.path.isfile(os.path.join(apexmf_model, "modflow.obs")):
         self.dlg.checkBox_mf_obs.setChecked(True)
         self.dlg.groupBox_plot_wt.setEnabled(True)
