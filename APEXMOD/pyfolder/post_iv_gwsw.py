@@ -1117,7 +1117,7 @@ def export_gwswToShp(self):
         data = np.loadtxt(
                         os.path.join(wd, filename),
                         skiprows=2,
-                        comments=["month:", "Layer"])
+                        comments=["month:", "Layer", "Negative", "Positive"])
         # NOTE: this is a temp hard code
         ddata = np.loadtxt(
                             os.path.join(wd, "amf_MF_gwsw.out"),
