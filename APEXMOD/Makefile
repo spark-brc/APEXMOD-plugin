@@ -1,7 +1,7 @@
 #/***************************************************************************
 # swat_modflow
 #
-# This plugin helps link SWAT and MODFLOW model.
+# This plugin helps link APEX and MODFLOW model.
 #							 -------------------
 #		begin				: 2017-08-23
 #		git sha				: $Format:%H$

@@ -3,7 +3,7 @@
 /***************************************************************************
  APEXMOD
                                  A QGIS plugin
- This plugin helps link SWAT and MODFLOW model.
+ This plugin helps link APEX and MODFLOW model.
                              -------------------
         begin                : 2020-01-23
         copyright            : (C) 2020 by Seonggyu Park
