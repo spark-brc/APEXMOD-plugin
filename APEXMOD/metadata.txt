@@ -9,7 +9,7 @@
 [general]
 name=APEXMOD
 qgisMinimumVersion=3.0
-description=This plugin helps link SWAT and MODFLOW model.
+description=This plugin helps link APEX and MODFLOW model.
 version=1.4
 author=Seonggyu Park
 email=seonggyu.park@brc.tamus.edu
