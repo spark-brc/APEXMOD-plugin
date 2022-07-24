@@ -97,7 +97,7 @@ def wt_plot_daily(self):
                         skiprows = 2,
                         usecols = [3, 4],
                         index_col = 0,
-                        names = ["grid_id", "mf_elev"],)
+                        names=["grid_id", "mf_elev"],)
 
     # Convert dataframe into a list with string items inside list
     grid_id_lst = mf_obs.index.astype(str).values.tolist()
@@ -115,7 +115,7 @@ def wt_plot_daily(self):
                             na_values=[-999, ""],
                             delimiter="\t")
         output_wt = pd.read_csv(
-                            os.path.join(wd, "amf_MODFLOW_obs_head"),
+                            os.path.join(wd, "apexmf_out_MF_obs"),
                             delim_whitespace=True,
                             skiprows = 1,
                             names = grid_id_lst,)
@@ -211,7 +211,7 @@ def wt_plot_daily(self):
 
     else:
         output_wt = pd.read_csv(
-                            os.path.join(wd, "amf_MODFLOW_obs_head"),
+                            os.path.join(wd, "apexmf_out_MF_obs"),
                             delim_whitespace=True,
                             skiprows = 1,
                             names = grid_id_lst,)
@@ -278,7 +278,7 @@ def wt_plot_monthly(self):
                                 parse_dates=True,
                                 delimiter = "\t")
 
-        output_wt = pd.read_csv(os.path.join(wd, "amf_MODFLOW_obs_head"),
+        output_wt = pd.read_csv(os.path.join(wd, "apexmf_out_MF_obs"),
                            delim_whitespace=True,
                            skiprows = 1,
                            names = grid_id_lst,)
@@ -386,7 +386,7 @@ def wt_plot_monthly(self):
                     transform=ax.transAxes,)
                     # color = colors[i%4])
     else:
-        output_wt = pd.read_csv(os.path.join(wd, "amf_MODFLOW_obs_head"),
+        output_wt = pd.read_csv(os.path.join(wd, "apexmf_out_MF_obs"),
                            delim_whitespace=True,
                            skiprows = 1,
                            names = grid_id_lst,)
@@ -457,7 +457,7 @@ def wt_plot_annual(self):
                                 parse_dates=True,
                                 delimiter = "\t")
 
-        output_wt = pd.read_csv(os.path.join(wd, "amf_MODFLOW_obs_head"),
+        output_wt = pd.read_csv(os.path.join(wd, "apexmf_out_MF_obs"),
                            delim_whitespace=True,
                            skiprows = 1,
                            names = grid_id_lst,)
@@ -565,7 +565,7 @@ def wt_plot_annual(self):
                     transform=ax.transAxes,)
                     # color = colors[i%4])
     else:
-        output_wt = pd.read_csv(os.path.join(wd, "amf_MODFLOW_obs_head"),
+        output_wt = pd.read_csv(os.path.join(wd, "apexmf_out_MF_obs"),
                            delim_whitespace=True,
                            skiprows = 1,
                            names = grid_id_lst,)
@@ -643,7 +643,7 @@ def export_wt_daily(self):
                                 delimiter = "\t")
 
         output_wt = pd.read_csv(
-                                os.path.join(wd, "amf_MODFLOW_obs_head"),
+                                os.path.join(wd, "apexmf_out_MF_obs"),
                                 delim_whitespace=True,
                                 skiprows = 1,
                                 names = grid_id_lst,)
@@ -756,7 +756,7 @@ def export_wt_daily(self):
 
     else:
         output_wt = pd.read_csv(
-                            os.path.join(wd, "amf_MODFLOW_obs_head"),
+                            os.path.join(wd, "apexmf_out_MF_obs"),
                             delim_whitespace=True,
                             skiprows = 1,
                             names = grid_id_lst,)
@@ -848,7 +848,7 @@ def export_wt_monthly(self):
                                 parse_dates=True,
                                 delimiter = "\t")
 
-        output_wt = pd.read_csv(os.path.join(wd, "amf_MODFLOW_obs_head"),
+        output_wt = pd.read_csv(os.path.join(wd, "apexmf_out_MF_obs"),
                            delim_whitespace=True,
                            skiprows = 1,
                            names = grid_id_lst,)
@@ -961,7 +961,7 @@ def export_wt_monthly(self):
 
     else:
         output_wt = pd.read_csv(
-                            os.path.join(wd, "amf_MODFLOW_obs_head"),
+                            os.path.join(wd, "apexmf_out_MF_obs"),
                             delim_whitespace=True,
                             skiprows = 1,
                             names = grid_id_lst,)
@@ -1049,9 +1049,10 @@ def export_wt_annual(self):
                                 index_col = 0,
                                 header = 0,
                                 parse_dates=True,
-                                delimiter = "\t")
+                                # delimiter = "\t"
+                                )
 
-        output_wt = pd.read_csv(os.path.join(wd, "amf_MODFLOW_obs_head"),
+        output_wt = pd.read_csv(os.path.join(wd, "apexmf_out_MF_obs"),
                            delim_whitespace=True,
                            skiprows = 1,
                            names = grid_id_lst,)
@@ -1165,7 +1166,7 @@ def export_wt_annual(self):
             msgBox.exec_()
 
     else:
-        output_wt = pd.read_csv(os.path.join(wd, "amf_MODFLOW_obs_head"),
+        output_wt = pd.read_csv(os.path.join(wd, "apexmf_out_MF_obs"),
                            delim_whitespace=True,
                            skiprows = 1,
                            names = grid_id_lst,)

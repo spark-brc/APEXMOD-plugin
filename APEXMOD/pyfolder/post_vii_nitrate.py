@@ -228,8 +228,6 @@ def read_perc_dates(self):
 
 
 
-
-
 def get_percno3_df(self):
     APEXMOD_path_dict = self.dirs_and_paths()
     stdate, eddate = self.define_sim_period()

@@ -173,7 +173,7 @@ def export_mf_recharge(self):
         with open(os.path.join(wd, filename), "r") as f:
             data = [x.strip() for x in f if x.strip() and not x.strip().startswith(y)] # Remove blank lines
         date = [x.strip().split() for x in data if x.strip().startswith("Day:")] # Collect only lines with dates
-        onlyDate = [x[1] for x in date] # Only date♣
+        onlyDate = [x[1] for x in date] # Only date
         data1 = [x.split() for x in data] # make each line a list
         sdate = datetime.datetime.strptime(startDate, "%m-%d-%Y") # Change startDate format
         dateList = [(sdate + datetime.timedelta(days=int(i)-1)).strftime("%m-%d-%Y") for i in onlyDate]

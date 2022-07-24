@@ -754,8 +754,6 @@ def rivInfoTo_mf_riv2(self):
 
     hk = self.dlg.lineEdit_riverbedK.text()
     rivBedthick = self.dlg.lineEdit_riverbedThick.text()
-
-
     width_sum = data.groupby(["grid_id"])["Wid2"].sum()
     depth_avg = data.groupby(["grid_id"])["Dep2"].mean()
     row_avg = data.groupby(["grid_id"])["row"].mean().astype(int)

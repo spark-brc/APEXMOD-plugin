@@ -57,7 +57,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideNone</enum>
@@ -466,7 +466,7 @@ p, li { white-space: pre-wrap; }
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-154</y>
             <width>606</width>
             <height>575</height>
            </rect>
@@ -516,6 +516,7 @@ p, li { white-space: pre-wrap; }
                <widget class="QPushButton" name="pushButton_subbasin_shapefile">
                 <property name="font">
                  <font>
+                  <pointsize>8</pointsize>
                   <weight>50</weight>
                   <italic>false</italic>
                   <bold>false</bold>
@@ -540,6 +541,7 @@ p, li { white-space: pre-wrap; }
                <widget class="QPushButton" name="pushButton_river_shapefile">
                 <property name="font">
                  <font>
+                  <pointsize>8</pointsize>
                   <weight>50</weight>
                   <italic>false</italic>
                   <bold>false</bold>
@@ -564,6 +566,7 @@ p, li { white-space: pre-wrap; }
                <widget class="QPushButton" name="pushButton_TxtInOut">
                 <property name="font">
                  <font>
+                  <pointsize>8</pointsize>
                   <weight>50</weight>
                   <italic>false</italic>
                   <bold>false</bold>
@@ -684,6 +687,7 @@ p, li { white-space: pre-wrap; }
                  <widget class="QLabel" name="label_20">
                   <property name="font">
                    <font>
+                    <pointsize>8</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -700,6 +704,7 @@ p, li { white-space: pre-wrap; }
                  <widget class="QPushButton" name="pushButton_MODFLOWfile">
                   <property name="font">
                    <font>
+                    <pointsize>8</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -726,6 +731,7 @@ p, li { white-space: pre-wrap; }
                   </property>
                   <property name="font">
                    <font>
+                    <pointsize>8</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -809,6 +815,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                      <property name="font">
                       <font>
+                       <pointsize>8</pointsize>
                        <weight>50</weight>
                        <italic>false</italic>
                        <bold>false</bold>
@@ -829,6 +836,7 @@ p, li { white-space: pre-wrap; }
                  <widget class="QgsCollapsibleGroupBox" name="mf_option_2">
                   <property name="font">
                    <font>
+                    <pointsize>8</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1035,7 +1043,10 @@ p, li { white-space: pre-wrap; }
                              <widget class="QCheckBox" name="checkBox_default_extent">
                               <property name="font">
                                <font>
+                                <pointsize>8</pointsize>
+                                <weight>50</weight>
                                 <italic>false</italic>
+                                <bold>false</bold>
                                </font>
                               </property>
                               <property name="text">
@@ -1109,6 +1120,7 @@ p, li { white-space: pre-wrap; }
                   </property>
                   <property name="font">
                    <font>
+                    <pointsize>8</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1210,6 +1222,7 @@ p, li { white-space: pre-wrap; }
                <widget class="QGroupBox" name="groupBox_river_cells">
                 <property name="font">
                  <font>
+                  <pointsize>8</pointsize>
                   <weight>50</weight>
                   <bold>false</bold>
                  </font>
@@ -1256,6 +1269,7 @@ p, li { white-space: pre-wrap; }
                       <widget class="QRadioButton" name="radioButton_mf_riv1">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>50</weight>
                          <bold>false</bold>
                         </font>
@@ -1328,6 +1342,7 @@ p, li { white-space: pre-wrap; }
                       <widget class="QRadioButton" name="radioButton_mf_riv2">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>50</weight>
                          <bold>false</bold>
                         </font>
@@ -1341,6 +1356,7 @@ p, li { white-space: pre-wrap; }
                       <widget class="QRadioButton" name="radioButton_mf_riv3">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>50</weight>
                          <bold>false</bold>
                         </font>
@@ -1531,6 +1547,7 @@ Create &quot;river_grid&quot; shapefile</string>
                 </property>
                 <property name="font">
                  <font>
+                  <pointsize>8</pointsize>
                   <weight>50</weight>
                   <bold>false</bold>
                  </font>
@@ -1660,6 +1677,7 @@ Create &quot;river_grid&quot; shapefile</string>
                         </property>
                         <property name="font">
                          <font>
+                          <pointsize>8</pointsize>
                           <weight>50</weight>
                           <bold>false</bold>
                          </font>
@@ -1732,7 +1750,7 @@ Create &quot;river_grid&quot; shapefile</string>
                    </font>
                   </property>
                   <property name="text">
-                   <string>You will use DHRU areas bigger than size </string>
+                   <string>You will use intersected areas bigger than size </string>
                   </property>
                  </widget>
                 </item>
@@ -2258,7 +2276,7 @@ p, li { white-space: pre-wrap; }
             <x>0</x>
             <y>0</y>
             <width>606</width>
-            <height>564</height>
+            <height>653</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -4038,7 +4056,7 @@ APEX-MODFLOW Simulation</string>
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-138</y>
+            <y>0</y>
             <width>606</width>
             <height>766</height>
            </rect>
@@ -6992,6 +7010,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -7017,6 +7036,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -7042,6 +7062,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -7078,6 +7099,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -7103,6 +7125,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                  </widget>
@@ -7120,6 +7143,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -7133,6 +7157,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -7146,6 +7171,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -7159,6 +7185,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -7176,6 +7203,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="title">
@@ -7188,6 +7216,7 @@ APEX-MODFLOW Simulation</string>
                       <font>
                        <weight>50</weight>
                        <bold>false</bold>
+                       <kerning>false</kerning>
                       </font>
                      </property>
                     </widget>
@@ -7211,6 +7240,7 @@ APEX-MODFLOW Simulation</string>
                       <font>
                        <weight>50</weight>
                        <bold>false</bold>
+                       <kerning>false</kerning>
                       </font>
                      </property>
                     </widget>
@@ -7425,6 +7455,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -7449,6 +7480,7 @@ APEX-MODFLOW Simulation</string>
                      <font>
                       <weight>50</weight>
                       <bold>false</bold>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="value">
@@ -7468,6 +7500,7 @@ APEX-MODFLOW Simulation</string>
                      <font>
                       <weight>50</weight>
                       <bold>false</bold>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="value">
@@ -7748,6 +7781,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>true</kerning>
                    </font>
                   </property>
                   <property name="title">
@@ -7835,6 +7869,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>true</kerning>
                    </font>
                   </property>
                   <property name="title">
@@ -8009,6 +8044,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>true</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -8022,6 +8058,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>true</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -8035,6 +8072,7 @@ APEX-MODFLOW Simulation</string>
                    <font>
                     <weight>50</weight>
                     <bold>false</bold>
+                    <kerning>true</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -8225,18 +8263,18 @@ APEX-MODFLOW Simulation</string>
  </customwidgets>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_mf_active"/>
   <buttongroup name="buttonGroup_gw_delay"/>
-  <buttongroup name="buttonGroup_drain_active"/>
   <buttongroup name="buttonGroup_cha_obd"/>
-  <buttongroup name="buttonGroup_head_recharge"/>
-  <buttongroup name="buttonGroup_RT3D_active"/>
-  <buttongroup name="buttonGroup_irrig_swat_active"/>
-  <buttongroup name="buttonGroup_irrig_active"/>
+  <buttongroup name="buttonGroup_perc_conc"/>
   <buttongroup name="buttonGroup_salt_obd"/>
   <buttongroup name="buttonGroup_wt_obd"/>
-  <buttongroup name="buttonGroup_mf_swat"/>
+  <buttongroup name="buttonGroup_drain_active"/>
   <buttongroup name="buttonGroup_salt_ions"/>
-  <buttongroup name="buttonGroup_perc_conc"/>
+  <buttongroup name="buttonGroup_mf_swat"/>
+  <buttongroup name="buttonGroup_mf_active"/>
+  <buttongroup name="buttonGroup_RT3D_active"/>
+  <buttongroup name="buttonGroup_irrig_swat_active"/>
+  <buttongroup name="buttonGroup_head_recharge"/>
+  <buttongroup name="buttonGroup_irrig_active"/>
  </buttongroups>
 </ui>
