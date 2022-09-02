@@ -61,6 +61,7 @@ from .dialogs.createMFmodel_dialog import createMFmodelDialog # from folder.file
 from .dialogs import help_dialog
 
 from .dialogs import create_rt3d_dlg
+from .dialogs import create_salt_dlg
 
 
 # import sub functions from pyfolder -----------------------------------#
@@ -283,6 +284,7 @@ class APEXMOD(object):
 
         # Open rt3d ui
         self.dlg.pushButton_open_rt3d_ui.clicked.connect(self.openRT3Dui)
+        self.dlg.pushButton_open_salt_ui.clicked.connect(self.open_salt_ui)
 
         # NOTE: 3rd Tab
         self.dlg.checkBox_mf_obs.toggled.connect(self.check_mf_obs)
@@ -1843,3 +1845,8 @@ class APEXMOD(object):
         self.rt3d.show()
         self.rt3d.exec_()
 
+    # put another ui in main ui
+    def open_salt_ui(self):
+        self.salt = create_salt_dlg.CreateSALT(self.iface)
+        self.salt.show()
+        self.salt.exec_()

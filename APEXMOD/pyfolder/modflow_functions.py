@@ -22,8 +22,8 @@ from PyQt5.QtWidgets import (
 
 def check_grid_size(self):  # Create fishnet based on MODFLOW dis file
     # Find .dis file and read number of rows, cols, x spacing, and y spacing (not allowed to change)
-    APEXMOD_path_dict = self.dirs_and_paths()
-    for filename in glob.glob(str(APEXMOD_path_dict['MODFLOW'])+"/*.dis"):
+    QSWATMOD_path_dict = self.dirs_and_paths()
+    for filename in glob.glob(str(QSWATMOD_path_dict['SMfolder'])+"/*.dis"):
         with open(filename, "r") as f:
             data = []
             for line in f.readlines():
@@ -31,8 +31,12 @@ def check_grid_size(self):  # Create fishnet based on MODFLOW dis file
                     data.append(line.replace('\n', '').split())
         nrow = int(data[0][1])
         ncol = int(data[0][2])
-        delr = float(data[2][1])  # cell width along rows (y spacing)
-        delc = float(data[3][1])  # cell width along columns (x spacing)
+        if data[2][0] == "INTERNAL":        
+            delr = float(data[3][1])  # cell width along rows (y spacing)
+            delc = float(data[4][1])  # cell width along columns (x spacing)
+        else:
+            delr = float(data[2][1])  # cell width along rows (y spacing)
+            delc = float(data[3][1])  # cell width along columns (x spacing)        
         grid_size = delr * delc
     return grid_size
 
