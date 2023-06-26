@@ -115,7 +115,7 @@ def wt_plot_daily(self):
                             na_values=[-999, ""],
                             delimiter="\t")
         output_wt = pd.read_csv(
-                            os.path.join(wd, "apexmf_out_MF_obs"),
+                            os.path.join(wd, "amf_MODFLOW_obs_head"),
                             delim_whitespace=True,
                             skiprows = 1,
                             names = grid_id_lst,)

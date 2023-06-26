@@ -179,8 +179,57 @@ def cha_sim_obd_plot(self):
         color='limegreen',
         transform=ax.transAxes)
     plt.legend(fontsize=8, loc="lower right", ncol=2, bbox_to_anchor=(1, 1))
-    plt.show() 
+    plt.show()
 
+def cha_sim_obd_with_scatter(self):
+    sims, obds, df = get_cha_sims_obds(self)
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(9, 4))
+    axes[0].plot(df.index, df.iloc[:, 0], c='limegreen', lw=1, label="Simulated")
+    if self.dlg.radioButton_cha_obd_point.isChecked():
+        size = float(self.dlg.spinBox_cha_obd_size.value())
+        axes[0].scatter(
+                    df.index, df.iloc[:, 1], c='m', lw=1, alpha=0.5, s=size, marker='x',
+                    label="Observed", zorder=3)        
+    else:
+        axes[0].plot(
+                df.index, df.iloc[:, 1], c='m', lw=1.5, alpha=0.5,
+                label="Observed", zorder=3)
+    nse = ObjFns.nse(sims, obds)
+    rmse = ObjFns.rmse(sims, obds)
+    pbias = ObjFns.pbias(sims, obds)
+    rsq = ObjFns.rsq(sims, obds)
+    axes[0].text(
+        .01, 0.95, u'Nash–Sutcliffe: '+ "%.4f" % nse,
+        fontsize=8,
+        horizontalalignment='left',
+        color='limegreen',
+        transform=axes[0].transAxes)
+    axes[0].text(
+        .01, 0.90, r'$R^2$: ' + "%.4f" % rsq,
+        fontsize=8,
+        horizontalalignment='left',
+        color='limegreen',
+        transform=axes[0].transAxes)
+    axes[0].text(
+        .99, 0.95, u'PBIAS: ' + "%.4f" % pbias,
+        fontsize=8,
+        horizontalalignment='right',
+        color='limegreen',
+        transform=axes[0].transAxes)
+    axes[0].text(
+        .99, 0.90, u'RMSE: ' + "%.4f" % rmse,
+        fontsize=8,
+        horizontalalignment='right',
+        color='limegreen',
+        transform=axes[0].transAxes)
+    new_list = sims + obds
+    axes[0].legend(fontsize=8, loc="lower right", ncol=2, bbox_to_anchor=(1, 1))
+    axes[1].grid(True)
+    axes[1].plot([0, max(new_list)], [0, max(new_list)], 'k--', alpha=0.2)
+    axes[1].scatter(sims, obds, c=u'#1f77b4', s=size, marker='o', alpha=0.5)
+    axes[1].set_xlabel('Simulated', fontsize=10)
+    axes[1].set_ylabel('Observed', fontsize=10)
+    plt.show()
 
 def cha_plot(self):
     startDate, endDate, duration = DefineTime.get_start_end_time(self)

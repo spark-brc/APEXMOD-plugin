@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import matplotlib.dates as mdates
 import glob
-
 # import numpy as np
 import os
 import pandas as pd
@@ -39,6 +38,7 @@ def read_sub_no(self):
             self.dlg.horizontalSlider_cha_start_year.setTickInterval(int(1))
             self.dlg.horizontalSlider_cha_start_year.setTickPosition(QSlider.TicksBelow)
 
+
 def read_cha_vars(self):
     APEXMOD_path_dict = self.dirs_and_paths()
     wd = APEXMOD_path_dict['apexmf_model']
@@ -62,6 +62,7 @@ def read_cha_vars(self):
     self.dlg.comboBox_cha_vars.addItems(cha_vars)
     self.dlg.comboBox_cha_vars.setCurrentIndex(3)
     return col_lst_
+
 
 def read_cha_sim_data(self):
     APEXMOD_path_dict = self.dirs_and_paths()

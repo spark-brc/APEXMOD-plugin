@@ -235,7 +235,7 @@ def getBotfromR(self):
         'INPUT_VECTOR': input1,
         'COLUMN_PREFIX':'elev_',
         'STATS':[2]            
-    }    
+        }    
     processing.run("qgis:zonalstatistics", params)
     time = datetime.now().strftime('[%m/%d/%y %H:%M:%S]')
     self.textEdit_mf_log.append(time+' -> ' + 'Extrating Bottom Elevation from Raster has been finished...')

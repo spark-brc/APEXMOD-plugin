@@ -1032,8 +1032,10 @@ class APEXMOD(object):
     def plot_cha(self):
         if not self.dlg.groupBox_cha_obd.isChecked():
             post_i_cha.cha_plot(self)
-        if self.dlg.groupBox_cha_obd.isChecked():
+        if self.dlg.groupBox_cha_obd.isChecked() and not self.dlg.checkBox_hydro_scatter.isChecked():
             post_i_cha.cha_sim_obd_plot(self)
+        if self.dlg.groupBox_cha_obd.isChecked() and self.dlg.checkBox_hydro_scatter.isChecked():
+            post_i_cha.cha_sim_obd_with_scatter(self)
 
         # # Daily output format given
         # if self.dlg.radioButton_day.isChecked() and (self.dlg.comboBox_cha_time.currentText() == "Daily"):
