@@ -13,7 +13,7 @@ This repository contains source codes and an executable for APEXMOD.
 
 -----
 # <img src="./imgs/icon2.png" style="float" width="80" align="center"> &nbsp; Installation
-The QGIS3 software must be installed on the system prior to the installation of APEXMOD. We've tested APEXMOD with the “long term release (LTR)” (3.10.4 ~ 3.28.5) versions of QGIS3.
+The QGIS3 software must be installed on the system prior to the installation of APEXMOD. We've tested APEXMOD with the “long term release (LTR)” (3.28.12) and "latest release (RC)" (3.34.0) versions of QGIS3 (long term release version recommended). Download the [QGIS](https://www.qgis.org/en/site/forusers/download.html)
 
 - Install one of the versions of QGIS. It can be downloaded from https://qgis.org/en/site/forusers/download.html.
 - Download [the APEXMOD installer](https://github.com/spark-brc/APEXMOD/releases/download/v1.5.1/APEXMOD.exe) and install it by running APEXMOD 1.0.exe or a later version. The APEXMOD is installed into the user's home directory *(~\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\APEXMOD)*, which we will refer to as the APEXMOD plugin directory.
